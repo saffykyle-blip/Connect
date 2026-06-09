@@ -185,7 +185,7 @@ export function ConnectBuilder({ customerCode }: { customerCode?: string }) {
 
       <div className="relative z-10 mx-auto grid min-h-screen w-full max-w-6xl gap-5 px-5 py-5 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-start">
         <section className="rounded-lg border border-white/10 bg-[#101722]/90 p-5 shadow-[0_24px_80px_rgba(0,0,0,0.44)] backdrop-blur-xl lg:sticky lg:top-5">
-          <header className="mb-5 flex items-center justify-between gap-4">
+          <header className="mb-4 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <img
                 src="/logo.jpg"
@@ -201,6 +201,10 @@ export function ConnectBuilder({ customerCode }: { customerCode?: string }) {
               Install
             </Link>
           </header>
+
+          <p className="mb-6 text-sm leading-6 text-[#cbd6e4]">
+            Complete the information below according to the number of profiles you require, and then click the install button in the top right, where you will be directed to a page to choose the necessary install files for your phone.
+          </p>
 
           {/* Profile Selector Tiles */}
           <div className="mb-6 grid grid-cols-3 gap-2">
