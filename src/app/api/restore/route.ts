@@ -7,7 +7,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Email is required" }, { status: 400 });
     }
 
-    const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
+    const PAYSTACK_SECRET_KEY = "sk_test_c521c50c9ab2b643dfc88d3ebea1795cdd46a231";
     if (!PAYSTACK_SECRET_KEY) {
       return NextResponse.json({ error: "Payment gateway not configured" }, { status: 500 });
     }

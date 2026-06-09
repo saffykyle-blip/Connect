@@ -93,7 +93,7 @@ async function SubscriptionVerifiedCard({ profile, host }: { profile: ConnectPro
     return <ProfileUnavailable />;
   }
 
-  const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
+  const PAYSTACK_SECRET_KEY = "sk_test_c521c50c9ab2b643dfc88d3ebea1795cdd46a231";
   if (PAYSTACK_SECRET_KEY) {
     let isInactive = false;
 

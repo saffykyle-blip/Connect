@@ -8,7 +8,7 @@ export async function GET(request: Request) {
     return NextResponse.redirect(`${origin}/?error=missing_reference`);
   }
 
-  const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
+  const PAYSTACK_SECRET_KEY = "sk_test_c521c50c9ab2b643dfc88d3ebea1795cdd46a231";
   if (!PAYSTACK_SECRET_KEY) {
     return NextResponse.json({ error: "Missing Paystack Secret Key" }, { status: 500 });
   }

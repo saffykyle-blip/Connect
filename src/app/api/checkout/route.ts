@@ -9,7 +9,7 @@ export async function GET(request: Request) {
     return NextResponse.redirect(`${origin}/?error=missing_email`);
   }
 
-  const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
+  const PAYSTACK_SECRET_KEY = "sk_test_c521c50c9ab2b643dfc88d3ebea1795cdd46a231";
   if (!PAYSTACK_SECRET_KEY) {
     return NextResponse.json({ error: "Missing Paystack Secret Key" }, { status: 500 });
   }
@@ -24,7 +24,7 @@ export async function GET(request: Request) {
       body: JSON.stringify({
         email: email,
         amount: 5000, // ZAR 50.00 in cents
-        plan: "PLN_88mcw0sovh2akvn",
+        plan: "PLN_99pa84mf8310iyy",
         currency: "ZAR",
         callback_url: `${origin}/api/verify`,
         metadata: {
