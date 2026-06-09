@@ -3,32 +3,21 @@
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 
-const benefits = [
-  "Three branded profiles",
-  "NFC, QR, and vCard sharing",
-  "Hosted avatar uploads",
-  "Secure subscriber setup",
-];
-
-const signalStats = [
-  { value: "0.4s", label: "tap to open" },
-  { value: "3", label: "profiles" },
-  { value: "R50", label: "monthly" },
-];
-
 export default function LandingPage() {
   const [referralCode, setReferralCode] = useState("");
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showRestore, setShowRestore] = useState(false);
+  const [restoreEmail, setRestoreEmail] = useState("");
+  const [isRestoring, setIsRestoring] = useState(false);
+  const [restoreMessage, setRestoreMessage] = useState("");
 
   const handleCheckout = (event?: FormEvent<HTMLFormElement>) => {
     event?.preventDefault();
-
     if (!email || !email.includes("@")) {
       alert("Please enter a valid email address.");
       return;
     }
-
     setIsLoading(true);
     const params = new URLSearchParams();
     params.append("email", email.trim());
@@ -38,112 +27,45 @@ export default function LandingPage() {
     window.location.href = `/api/checkout?${params.toString()}`;
   };
 
-  return (
-    <main className="relative min-h-screen overflow-hidden bg-[#070806] text-[#fff7e8]">
-      <div className="connect-hero-bg" aria-hidden="true" />
-      <div className="connect-orbit-field" aria-hidden="true">
-        <span />
-        <span />
-        <span />
-        <span />
-      </div>
+  const handleRestore = async (event: FormEvent) => {
+    event.preventDefault();
+    setIsRestoring(true);
+    setRestoreMessage("");
 
-      <nav className="relative z-20 mx-auto flex w-full max-w-7xl items-center justify-between px-5 py-5 sm:px-8">
-        <Link className="group flex items-center gap-3" href="/">
+    try {
+      const res = await fetch("/api/restore", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: restoreEmail }),
+      });
+
+      if (res.ok) {
+        window.location.href = `/builder?customerCode=${encodeURIComponent(restoreEmail)}`;
+      } else {
+        const error = await res.json();
+        setRestoreMessage(error.error || "Failed to restore purchase.");
+      }
+    } catch {
+      setRestoreMessage("A network error occurred.");
+    } finally {
+      setIsRestoring(false);
+    }
+  };
+
+  return (
+    <main className="relative min-h-screen text-[#f7f4ed]">
+      <div className="mx-auto w-full max-w-[480px] min-h-screen flex flex-col px-5 py-8 sm:py-12">
+        <header className="mb-10 flex flex-col items-center text-center">
           <img
             src="/logo.jpg"
             alt="Connect"
-            className="h-11 w-11 rounded-lg border border-white/10 object-cover shadow-[0_0_28px_rgba(77,246,162,0.22)] transition-transform duration-500 group-hover:scale-105"
+            className="mb-4 h-16 w-16 rounded-xl border border-white/10 object-cover shadow-[0_0_24px_rgba(24,200,243,0.35)]"
           />
-          <div>
-            <p className="text-lg font-black leading-none tracking-normal text-white">Connect</p>
-            <p className="mt-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#a7a08f]">tap to share</p>
-          </div>
-        </Link>
-      </nav>
-
-      <section className="relative z-10 mx-auto grid min-h-[calc(100vh-84px)] w-full max-w-7xl items-center gap-10 px-5 pb-10 pt-2 sm:px-8 lg:grid-cols-[minmax(0,1.08fr)_minmax(420px,0.92fr)]">
-        <div className="max-w-3xl">
-          <div className="mb-5 inline-flex items-center gap-3 rounded-lg border border-[#4df6a2]/25 bg-[#4df6a2]/10 px-3 py-2 text-xs font-black uppercase tracking-[0.16em] text-[#d9ffe8] shadow-[0_0_34px_rgba(77,246,162,0.12)]">
-            <span className="h-2 w-2 rounded-full bg-[#4df6a2] shadow-[0_0_16px_rgba(77,246,162,0.9)]" />
-            NFC business cards for every phone
-          </div>
-
-          <h1 className="max-w-4xl text-5xl font-black leading-[0.95] tracking-normal text-white sm:text-7xl lg:text-8xl">
-            Make the first tap impossible to forget.
-          </h1>
-
-          <p className="mt-7 max-w-2xl text-lg leading-8 text-[#c3bfb0] sm:text-xl">
-            Connect turns a phone tap into a polished profile, instant contact save, QR fallback, and a phone-aware setup flow for subscribers.
-          </p>
-
-          <div className="mt-8 grid max-w-xl grid-cols-3 gap-3">
-            {signalStats.map((stat) => (
-              <div className="rounded-lg border border-white/10 bg-white/[0.055] p-4 backdrop-blur" key={stat.label}>
-                <p className="text-2xl font-black text-white">{stat.value}</p>
-                <p className="mt-1 text-xs font-bold uppercase tracking-[0.12em] text-[#a7a08f]">{stat.label}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="relative mx-auto w-full max-w-[520px]">
-          <div className="finger-stage" aria-hidden="true">
-            <img className="finger-touch-image" src="/logo.jpg" alt="" />
-            <div className="finger-stage-vignette" />
-            <div className="finger-contact-beam" />
-            <div className="finger-hotspot">
-              <span className="tap-pulse tap-pulse-one" />
-              <span className="tap-pulse tap-pulse-two" />
-              <span className="tap-pulse tap-pulse-three" />
-              <span className="tap-core" />
-            </div>
-          </div>
-
-          <form
-            className="relative mt-5 rounded-lg border border-white/10 bg-[#11130c]/90 p-5 shadow-[0_24px_80px_rgba(0,0,0,0.48)] backdrop-blur-xl sm:p-6"
-            onSubmit={handleCheckout}
-          >
-            <div className="mb-5 flex items-start justify-between gap-4">
-              <div>
-                <h2 className="text-2xl font-black tracking-normal text-white">Launch subscription</h2>
-                <p className="mt-1 text-sm leading-6 text-[#aaa592]">Start with your email and we will route you into setup.</p>
-              </div>
-              <div className="rounded-lg border border-[#ff6a5b]/35 bg-[#ff6a5b]/10 px-3 py-2 text-right">
-                <p className="text-2xl font-black leading-none text-[#ffd1ba]">R50</p>
-                <p className="mt-1 text-[0.65rem] font-bold uppercase tracking-[0.14em] text-[#d59682]">per month</p>
-              </div>
-            </div>
-
-            <div className="mb-5 grid gap-2">
-              {benefits.map((benefit) => (
-                <div className="flex items-center gap-3 rounded-lg border border-white/10 bg-white/[0.045] px-3 py-2 text-sm font-semibold text-[#eee8d8]" key={benefit}>
-                  <span className="h-2 w-2 rounded-full bg-[#4df6a2] shadow-[0_0_12px_rgba(77,246,162,0.8)]" />
-                  {benefit}
-                </div>
-              ))}
-            </div>
-
-            <div className="grid gap-4">
-              <label className="grid gap-2 text-left text-xs font-black uppercase tracking-[0.14em] text-[#aaa592]">
-                Email Address *
-                <input
-                  type="email"
-                  required
-                  className="rounded-lg border border-white/10 bg-white/[0.055] px-4 py-3 text-base normal-case tracking-normal text-[#fff7e8] outline-none transition-colors placeholder:text-[#776f62] focus:border-[#4df6a2] focus:bg-white/[0.075]"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                />
-              </label>
-
-              <label className="grid gap-2 text-left text-xs font-black uppercase tracking-[0.14em] text-[#aaa592]">
-                Referral Code
           <h1 className="text-4xl font-black text-white">Connect</h1>
           <p className="mt-2 text-[#9da8b8]">Your Ultimate NFC Digital Business Card</p>
         </header>
 
-        <div className="mx-auto max-w-md rounded-2xl border border-white/10 bg-[#111720] p-8 shadow-2xl">
+        <div className="shell-card p-8">
           {showRestore ? (
             <>
               <h2 className="mb-2 text-2xl font-black text-white">Restore Access</h2>
@@ -158,47 +80,50 @@ export default function LandingPage() {
                     value={restoreEmail}
                     onChange={(e) => setRestoreEmail(e.target.value)}
                     placeholder="hello@example.com"
-                    className="rounded-lg border border-white/10 bg-white/[0.055] px-3 py-3 text-[#f7f4ed] outline-none focus:border-[#18c8f3]"
+                    className="rounded-lg border border-white/10 bg-white/[0.055] px-4 py-3 text-[#f7f4ed] outline-none focus:border-[#18c8f3] focus:shadow-[0_0_0_3px_rgba(24,200,243,0.14)] transition-all"
                   />
                 </label>
                 
                 <button
                   type="submit"
                   disabled={isRestoring}
-                  className="mt-2 rounded-lg bg-[#18c8f3] px-4 py-3 font-black text-[#031016] shadow-[0_10px_22px_rgba(24,200,243,0.24)] disabled:opacity-50"
+                  className="mt-2 rounded-lg bg-gradient-to-br from-[#13bde8] to-[#0d8fb3] border border-[#18c8f3]/65 px-4 py-3 font-black text-[#031016] shadow-[0_10px_22px_rgba(24,200,243,0.24)] transition-opacity disabled:opacity-50"
                 >
                   {isRestoring ? "Restoring..." : "Restore Purchase"}
                 </button>
                 {restoreMessage && <p className="text-center text-sm font-medium text-[#f6b84a]">{restoreMessage}</p>}
               </form>
-              <button 
-                type="button" 
-                onClick={() => setShowRestore(false)}
-                className="mt-6 text-sm font-medium text-[#9da8b8] hover:text-white"
-              >
-                Back to Sign Up
-              </button>
+              
+              <div className="mt-6 text-center">
+                <button 
+                  type="button" 
+                  onClick={() => setShowRestore(false)}
+                  className="text-sm font-medium text-[#9da8b8] hover:text-white transition-colors"
+                >
+                  Back to Sign Up
+                </button>
+              </div>
             </>
           ) : (
             <>
               <h2 className="mb-2 text-2xl font-black text-white">Monthly Subscription</h2>
-              <div className="mb-6 flex items-baseline justify-center gap-2">
+              <div className="mb-6 flex items-baseline gap-2">
                 <span className="text-4xl font-black text-[#18c8f3]">R50</span>
                 <span className="text-[#9da8b8] font-medium">per month</span>
               </div>
               
               <ul className="mb-8 space-y-3 text-sm text-[#cbd6e4] text-left">
-                <li className="flex items-center gap-2">
-                  <span className="text-[#18c8f3]">✓</span> Unlimited NFC Scans
+                <li className="flex items-center gap-3">
+                  <span className="text-[#18c8f3] text-lg leading-none">•</span> Unlimited NFC Scans
                 </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-[#18c8f3]">✓</span> 3 Separate Profiles
+                <li className="flex items-center gap-3">
+                  <span className="text-[#18c8f3] text-lg leading-none">•</span> 3 Separate Profiles
                 </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-[#18c8f3]">✓</span> Dynamic Social Links
+                <li className="flex items-center gap-3">
+                  <span className="text-[#18c8f3] text-lg leading-none">•</span> Dynamic Social Links
                 </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-[#18c8f3]">✓</span> Advanced Analytics (Coming soon)
+                <li className="flex items-center gap-3">
+                  <span className="text-[#18c8f3] text-lg leading-none">•</span> Hosted Avatar Uploads
                 </li>
               </ul>
 
@@ -211,7 +136,7 @@ export default function LandingPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="hello@example.com"
-                    className="rounded-lg border border-white/10 bg-white/[0.055] px-3 py-3 text-[#f7f4ed] outline-none focus:border-[#18c8f3]"
+                    className="rounded-lg border border-white/10 bg-white/[0.055] px-4 py-3 text-[#f7f4ed] outline-none focus:border-[#18c8f3] focus:shadow-[0_0_0_3px_rgba(24,200,243,0.14)] transition-all"
                   />
                 </label>
                 
@@ -222,25 +147,28 @@ export default function LandingPage() {
                     value={referralCode}
                     onChange={(e) => setReferralCode(e.target.value)}
                     placeholder="e.g. FRIEND10"
-                    className="rounded-lg border border-white/10 bg-white/[0.055] px-3 py-3 text-[#f7f4ed] outline-none focus:border-[#18c8f3]"
+                    className="rounded-lg border border-white/10 bg-white/[0.055] px-4 py-3 text-[#f7f4ed] outline-none focus:border-[#18c8f3] focus:shadow-[0_0_0_3px_rgba(24,200,243,0.14)] transition-all"
                   />
                 </label>
 
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="mt-2 rounded-lg bg-[#18c8f3] px-4 py-3 font-black text-[#031016] shadow-[0_10px_22px_rgba(24,200,243,0.24)] disabled:opacity-50"
+                  className="mt-2 rounded-lg bg-gradient-to-br from-[#13bde8] to-[#0d8fb3] border border-[#18c8f3]/65 px-4 py-3 font-black text-[#031016] shadow-[0_10px_22px_rgba(24,200,243,0.24)] transition-opacity disabled:opacity-50"
                 >
                   {isLoading ? "Redirecting..." : "Subscribe with Paystack"}
                 </button>
               </form>
-              <button 
-                type="button" 
-                onClick={() => setShowRestore(true)}
-                className="mt-6 text-sm font-medium text-[#9da8b8] hover:text-white"
-              >
-                Already subscribed? Restore Access
-              </button>
+              
+              <div className="mt-6 text-center">
+                <button 
+                  type="button" 
+                  onClick={() => setShowRestore(true)}
+                  className="text-sm font-medium text-[#9da8b8] hover:text-white transition-colors"
+                >
+                  Already subscribed? Restore Access
+                </button>
+              </div>
             </>
           )}
         </div>

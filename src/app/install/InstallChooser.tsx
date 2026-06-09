@@ -54,14 +54,7 @@ export function InstallChooser() {
   const primaryClassName = "mt-6 flex min-h-12 items-center justify-center rounded-lg bg-[#18c8f3] px-5 text-center font-black text-[#031016] shadow-[0_12px_28px_rgba(24,200,243,0.22)]";
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#06080d] text-[#f7f4ed]">
-      <div className="connect-hero-bg" aria-hidden="true" />
-      <div className="connect-orbit-field" aria-hidden="true">
-        <span />
-        <span />
-        <span />
-        <span />
-      </div>
+    <main className="relative min-h-screen text-[#f7f4ed]">
 
       <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-2xl flex-col px-5 py-5">
         <header className="mb-6 flex items-center justify-between gap-4">

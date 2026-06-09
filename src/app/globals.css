@@ -1,8 +1,15 @@
 @import "tailwindcss";
 
 :root {
-  --background: #070806;
-  --foreground: #fff7e8;
+  --background: #090b0f;
+  --foreground: #f7f4ed;
+  --panel: #111720;
+  --panel-2: #151d28;
+  --line: rgba(255, 255, 255, 0.1);
+  --muted: #9da8b8;
+  --cyan: #18c8f3;
+  --amber: #f6b84a;
+  --danger: #f76f6f;
 }
 
 @theme inline {
@@ -13,7 +20,9 @@
 }
 
 body {
-  background: var(--background);
+  background: 
+    radial-gradient(circle at 50% 0%, rgba(24, 200, 243, 0.16), transparent 36rem),
+    linear-gradient(145deg, #07090d 0%, #111720 52%, #0b0c10 100%);
   color: var(--foreground);
   font-family: Inter, Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   min-height: 100vh;
@@ -29,322 +38,14 @@ a {
   color: inherit;
 }
 
-.connect-hero-bg {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(circle at 16% 18%, rgba(77, 246, 162, 0.18), transparent 28rem),
-    radial-gradient(circle at 82% 12%, rgba(255, 106, 91, 0.16), transparent 26rem),
-    radial-gradient(circle at 52% 88%, rgba(255, 211, 110, 0.12), transparent 32rem),
-    linear-gradient(145deg, #070806 0%, #11130c 48%, #0b0705 100%);
-}
-
-.connect-hero-bg::before {
-  position: absolute;
-  inset: 0;
-  content: "";
-  opacity: 0.2;
-  background-image:
-    linear-gradient(rgba(255, 247, 232, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 247, 232, 0.06) 1px, transparent 1px);
-  background-size: 72px 72px;
-  mask-image: radial-gradient(circle at 50% 34%, black, transparent 72%);
-}
-
-.connect-hero-bg::after {
-  position: absolute;
-  inset: 0;
-  content: "";
-  background:
-    linear-gradient(90deg, transparent 0%, rgba(77, 246, 162, 0.08) 48%, transparent 58%),
-    linear-gradient(180deg, transparent 0%, rgba(255, 106, 91, 0.07) 45%, transparent 60%);
-  mix-blend-mode: screen;
-  animation: connect-scan 8s ease-in-out infinite;
-}
-
-.connect-orbit-field {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
+/* Base minimal utility classes for consistency */
+.shell-card {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(17, 23, 32, 0.82);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.32);
+  backdrop-filter: blur(18px);
   overflow: hidden;
-}
-
-.connect-orbit-field span {
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  background: #4df6a2;
-  box-shadow: 0 0 24px rgba(77, 246, 162, 0.9);
-  opacity: 0.42;
-  animation: connect-float 9s ease-in-out infinite;
-}
-
-.connect-orbit-field span:nth-child(1) {
-  left: 12%;
-  top: 24%;
-}
-
-.connect-orbit-field span:nth-child(2) {
-  left: 76%;
-  top: 20%;
-  width: 6px;
-  height: 6px;
-  background: #ff6a5b;
-  box-shadow: 0 0 22px rgba(255, 106, 91, 0.85);
-  animation-delay: -2.2s;
-}
-
-.connect-orbit-field span:nth-child(3) {
-  left: 66%;
-  top: 78%;
-  width: 10px;
-  height: 10px;
-  animation-delay: -4.4s;
-}
-
-.connect-orbit-field span:nth-child(4) {
-  left: 28%;
-  top: 84%;
-  width: 5px;
-  height: 5px;
-  background: #fff7e8;
-  box-shadow: 0 0 20px rgba(255, 247, 232, 0.72);
-  animation-delay: -6.4s;
-}
-
-.finger-stage {
-  position: relative;
-  min-height: 330px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 8px;
-  overflow: hidden;
-  background:
-    radial-gradient(circle at 50% 47%, rgba(77, 246, 162, 0.3), transparent 11rem),
-    linear-gradient(135deg, rgba(255, 247, 232, 0.08), rgba(255, 247, 232, 0.025));
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    0 28px 80px rgba(0, 0, 0, 0.45),
-    0 0 60px rgba(77, 246, 162, 0.1);
-  isolation: isolate;
-}
-
-.finger-stage::before {
-  position: absolute;
-  inset: 8%;
-  content: "";
-  border: 1px solid rgba(77, 246, 162, 0.18);
-  border-radius: 50%;
-  filter: blur(0.4px);
-  animation: connect-spin 18s linear infinite;
-  z-index: 2;
-}
-
-.finger-stage::after {
-  position: absolute;
-  inset: 0;
-  content: "";
-  background:
-    linear-gradient(110deg, transparent 16%, rgba(255, 255, 255, 0.16) 35%, transparent 48%),
-    radial-gradient(circle at 50% 47%, transparent 0 12%, rgba(255, 106, 91, 0.1) 13%, transparent 17%);
-  opacity: 0.5;
-  animation: glass-sweep 6.5s ease-in-out infinite;
-  z-index: 3;
-}
-
-.finger-touch-image {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center center;
-  filter: saturate(1.08) contrast(1.04);
-  transform: scale(1.015);
-  animation: finger-breathe 7s ease-in-out infinite;
-  z-index: 1;
-}
-
-.finger-stage-vignette {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(circle at 50% 47%, transparent 0 14%, rgba(77, 246, 162, 0.11) 15%, transparent 21%),
-    linear-gradient(90deg, rgba(7, 8, 6, 0.22), transparent 28%, transparent 72%, rgba(7, 8, 6, 0.34)),
-    linear-gradient(180deg, rgba(7, 8, 6, 0.1), transparent 40%, rgba(7, 8, 6, 0.34));
-  z-index: 2;
-}
-
-.finger-contact-beam {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  width: 2px;
-  height: 100%;
-  background: linear-gradient(180deg, transparent, rgba(77, 246, 162, 0.82), transparent);
-  box-shadow:
-    0 0 18px rgba(77, 246, 162, 0.9),
-    0 0 46px rgba(255, 106, 91, 0.38);
-  transform: translateX(-50%);
-  opacity: 0.82;
-  animation: contact-beam 3.6s ease-in-out infinite;
-  z-index: 4;
-}
-
-.finger-hotspot {
-  position: absolute;
-  left: 50%;
-  top: 47%;
-  display: grid;
-  width: 118px;
-  height: 118px;
-  place-items: center;
-  transform: translate(-50%, -50%);
-  z-index: 5;
-}
-
-.tap-core {
-  width: 20px;
-  height: 20px;
-  border-radius: 999px;
-  background: #fff7e8;
-  box-shadow:
-    0 0 18px rgba(255, 247, 232, 0.95),
-    0 0 44px rgba(77, 246, 162, 0.92),
-    0 0 92px rgba(255, 106, 91, 0.42);
-  animation: core-beat 2.4s ease-in-out infinite;
-}
-
-.tap-pulse {
-  position: absolute;
-  inset: 38px;
-  border: 1px solid rgba(77, 246, 162, 0.62);
-  border-radius: 999px;
-  animation: nfc-pulse 2.4s ease-out infinite;
-}
-
-.tap-pulse-two {
-  animation-delay: 0.45s;
-}
-
-.tap-pulse-three {
-  animation-delay: 0.9s;
-}
-
-.connect-primary-button {
-  position: relative;
-  overflow: hidden;
-}
-
-.connect-primary-button::after {
-  position: absolute;
-  inset: 0;
-  content: "";
-  background: linear-gradient(110deg, transparent 0%, rgba(255, 255, 255, 0.42) 45%, transparent 65%);
-  transform: translateX(-120%);
-  animation: button-sheen 4.4s ease-in-out infinite;
-}
-
-@keyframes connect-scan {
-  0%, 100% {
-    transform: translateX(-16%) translateY(-8%);
-    opacity: 0.16;
-  }
-  50% {
-    transform: translateX(16%) translateY(8%);
-    opacity: 0.28;
-  }
-}
-
-@keyframes connect-float {
-  0%, 100% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  50% {
-    transform: translate3d(26px, -34px, 0) scale(1.18);
-  }
-}
-
-@keyframes connect-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes finger-breathe {
-  0%, 100% {
-    transform: scale(1.015);
-  }
-  50% {
-    transform: scale(1.045);
-  }
-}
-
-@keyframes contact-beam {
-  0%, 100% {
-    opacity: 0.46;
-    transform: translateX(-50%) scaleY(0.82);
-  }
-  50% {
-    opacity: 0.92;
-    transform: translateX(-50%) scaleY(1);
-  }
-}
-
-@keyframes glass-sweep {
-  0%, 100% {
-    transform: translateX(-20%);
-    opacity: 0.28;
-  }
-  50% {
-    transform: translateX(18%);
-    opacity: 0.54;
-  }
-}
-
-@keyframes nfc-pulse {
-  0% {
-    transform: scale(0.25);
-    opacity: 0.92;
-  }
-  80%, 100% {
-    transform: scale(2.2);
-    opacity: 0;
-  }
-}
-
-@keyframes core-beat {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.22);
-  }
-}
-
-@keyframes button-sheen {
-  0%, 40% {
-    transform: translateX(-120%);
-  }
-  62%, 100% {
-    transform: translateX(120%);
-  }
-}
-
-@media (max-width: 520px) {
-  .finger-stage {
-    min-height: 285px;
-  }
-
-  .finger-touch-image {
-    object-position: center center;
-  }
-
-  .finger-hotspot {
-    top: 47%;
-    width: 104px;
-    height: 104px;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -357,3 +58,4 @@ a {
     transition-duration: 0.001ms !important;
   }
 }
+

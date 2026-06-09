@@ -181,14 +181,7 @@ export function ConnectBuilder({ customerCode }: { customerCode?: string }) {
   }
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#06080d] text-[#f7f4ed]">
-      <div className="connect-hero-bg" aria-hidden="true" />
-      <div className="connect-orbit-field" aria-hidden="true">
-        <span />
-        <span />
-        <span />
-        <span />
-      </div>
+    <main className="relative min-h-screen text-[#f7f4ed]">
 
       <div className="relative z-10 mx-auto grid min-h-screen w-full max-w-6xl gap-5 px-5 py-5 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-start">
         <section className="rounded-lg border border-white/10 bg-[#101722]/90 p-5 shadow-[0_24px_80px_rgba(0,0,0,0.44)] backdrop-blur-xl lg:sticky lg:top-5">
