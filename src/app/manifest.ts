@@ -7,8 +7,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: 'Create and share a mobile business card with NFC, QR, and vCard fallbacks.',
     start_url: '/',
     display: 'standalone',
-    background_color: '#07090d',
-    theme_color: '#18c8f3',
+    background_color: '#070806',
+    theme_color: '#4df6a2',
     icons: [
       {
         src: '/thumbnail.png',

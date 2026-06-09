@@ -2,7 +2,11 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  if (request.nextUrl.pathname.startsWith('/builder')) {
+  const isSubscriberArea =
+    request.nextUrl.pathname.startsWith('/builder') ||
+    request.nextUrl.pathname.startsWith('/install');
+
+  if (isSubscriberArea) {
     const hasAccess = request.cookies.get('connect_access')?.value === 'true';
     if (!hasAccess) {
       return NextResponse.redirect(new URL('/', request.url));
@@ -12,5 +16,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/builder/:path*'],
+  matcher: ['/builder/:path*', '/install/:path*'],
 };
