@@ -139,26 +139,112 @@ export default function LandingPage() {
 
               <label className="grid gap-2 text-left text-xs font-black uppercase tracking-[0.14em] text-[#aaa592]">
                 Referral Code
-                <input
-                  type="text"
-                  className="rounded-lg border border-white/10 bg-white/[0.055] px-4 py-3 text-base normal-case tracking-normal text-[#fff7e8] outline-none transition-colors placeholder:text-[#776f62] focus:border-[#4df6a2] focus:bg-white/[0.075]"
-                  placeholder="CREAM2026"
-                  value={referralCode}
-                  onChange={(event) => setReferralCode(event.target.value.toUpperCase())}
-                />
-              </label>
+          <h1 className="text-4xl font-black text-white">Connect</h1>
+          <p className="mt-2 text-[#9da8b8]">Your Ultimate NFC Digital Business Card</p>
+        </header>
 
-              <button
-                disabled={isLoading}
-                className="connect-primary-button rounded-lg bg-[#4df6a2] px-5 py-4 font-black text-[#06110a] shadow-[0_14px_30px_rgba(77,246,162,0.24)] transition-transform hover:scale-[1.01] active:scale-[0.99] disabled:cursor-wait disabled:opacity-70"
-                type="submit"
+        <div className="mx-auto max-w-md rounded-2xl border border-white/10 bg-[#111720] p-8 shadow-2xl">
+          {showRestore ? (
+            <>
+              <h2 className="mb-2 text-2xl font-black text-white">Restore Access</h2>
+              <p className="mb-6 text-sm text-[#cbd6e4]">Enter your email to restore your subscription.</p>
+              
+              <form onSubmit={handleRestore} className="grid gap-4 text-left">
+                <label className="grid gap-1 text-sm font-bold text-[#d6dee9]">
+                  Email Address
+                  <input
+                    type="email"
+                    required
+                    value={restoreEmail}
+                    onChange={(e) => setRestoreEmail(e.target.value)}
+                    placeholder="hello@example.com"
+                    className="rounded-lg border border-white/10 bg-white/[0.055] px-3 py-3 text-[#f7f4ed] outline-none focus:border-[#18c8f3]"
+                  />
+                </label>
+                
+                <button
+                  type="submit"
+                  disabled={isRestoring}
+                  className="mt-2 rounded-lg bg-[#18c8f3] px-4 py-3 font-black text-[#031016] shadow-[0_10px_22px_rgba(24,200,243,0.24)] disabled:opacity-50"
+                >
+                  {isRestoring ? "Restoring..." : "Restore Purchase"}
+                </button>
+                {restoreMessage && <p className="text-center text-sm font-medium text-[#f6b84a]">{restoreMessage}</p>}
+              </form>
+              <button 
+                type="button" 
+                onClick={() => setShowRestore(false)}
+                className="mt-6 text-sm font-medium text-[#9da8b8] hover:text-white"
               >
-                {isLoading ? "Processing..." : "Get Started Now"}
+                Back to Sign Up
               </button>
-            </div>
-          </form>
+            </>
+          ) : (
+            <>
+              <h2 className="mb-2 text-2xl font-black text-white">Monthly Subscription</h2>
+              <div className="mb-6 flex items-baseline justify-center gap-2">
+                <span className="text-4xl font-black text-[#18c8f3]">R50</span>
+                <span className="text-[#9da8b8] font-medium">per month</span>
+              </div>
+              
+              <ul className="mb-8 space-y-3 text-sm text-[#cbd6e4] text-left">
+                <li className="flex items-center gap-2">
+                  <span className="text-[#18c8f3]">✓</span> Unlimited NFC Scans
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-[#18c8f3]">✓</span> 3 Separate Profiles
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-[#18c8f3]">✓</span> Dynamic Social Links
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-[#18c8f3]">✓</span> Advanced Analytics (Coming soon)
+                </li>
+              </ul>
+
+              <form onSubmit={handleCheckout} className="grid gap-4 text-left">
+                <label className="grid gap-1 text-sm font-bold text-[#d6dee9]">
+                  Email Address
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="hello@example.com"
+                    className="rounded-lg border border-white/10 bg-white/[0.055] px-3 py-3 text-[#f7f4ed] outline-none focus:border-[#18c8f3]"
+                  />
+                </label>
+                
+                <label className="grid gap-1 text-sm font-bold text-[#d6dee9]">
+                  Referral Code (Optional)
+                  <input
+                    type="text"
+                    value={referralCode}
+                    onChange={(e) => setReferralCode(e.target.value)}
+                    placeholder="e.g. FRIEND10"
+                    className="rounded-lg border border-white/10 bg-white/[0.055] px-3 py-3 text-[#f7f4ed] outline-none focus:border-[#18c8f3]"
+                  />
+                </label>
+
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="mt-2 rounded-lg bg-[#18c8f3] px-4 py-3 font-black text-[#031016] shadow-[0_10px_22px_rgba(24,200,243,0.24)] disabled:opacity-50"
+                >
+                  {isLoading ? "Redirecting..." : "Subscribe with Paystack"}
+                </button>
+              </form>
+              <button 
+                type="button" 
+                onClick={() => setShowRestore(true)}
+                className="mt-6 text-sm font-medium text-[#9da8b8] hover:text-white"
+              >
+                Already subscribed? Restore Access
+              </button>
+            </>
+          )}
         </div>
-      </section>
+      </div>
     </main>
   );
 }

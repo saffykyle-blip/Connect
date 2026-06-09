@@ -41,6 +41,15 @@ const fields: Array<{ key: Field; label: string; placeholder: string; type?: str
   { key: "website", label: "Website", placeholder: "https://example.com", type: "url" },
 ];
 
+declare global {
+  interface Window {
+    AndroidInterface?: {
+      updateNfcUrl: (url: string) => void;
+      getCurrentNfcUrl: () => string;
+    };
+  }
+}
+
 export function ConnectBuilder({ customerCode }: { customerCode?: string }) {
   const [origin] = useState(() => {
     return typeof window === "undefined" ? "https://web-profiles.vercel.app" : window.location.origin;
@@ -84,6 +93,12 @@ export function ConnectBuilder({ customerCode }: { customerCode?: string }) {
     subId: customerCode,
   }), [origin, profile, customerCode]);
 
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.AndroidInterface) {
+      window.AndroidInterface.updateNfcUrl(cardUrl);
+    }
+  }, [cardUrl]);
+
   const qrUrl = `https://quickchart.io/qr?size=260&margin=2&text=${encodeURIComponent(cardUrl)}`;
 
   function updateField<K extends Field>(key: K, value: ConnectProfile[K]) {
@@ -119,14 +134,14 @@ export function ConnectBuilder({ customerCode }: { customerCode?: string }) {
       });
       const data = await response.json();
       
-      if (data.url) {
+      if (response.ok && data.url) {
         updateField('avatar', data.url);
         setMessage("Avatar uploaded successfully.");
       } else {
-        setMessage("Failed to upload avatar.");
+        setMessage("Failed to upload avatar. Ensure Vercel Blob Token is set.");
       }
     } catch {
-      setMessage("Error uploading avatar.");
+      setMessage("Error uploading avatar. Are you online?");
     } finally {
       setIsUploading(false);
       if (fileInputRef.current) {
