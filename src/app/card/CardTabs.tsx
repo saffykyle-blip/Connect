@@ -32,11 +32,11 @@ export function CardTabs({ profile, phone, cardUrl, qrUrl }: CardTabsProps) {
 
   return (
     <div className="flex w-full flex-col">
-      <div className="mx-auto mb-6 flex w-full max-w-xs rounded-lg border border-white/10 bg-[#111720] p-1">
+      <div className="mx-auto mb-6 flex w-full max-w-xs rounded-lg border border-white/10 bg-white/[0.055] p-1 shadow-inner">
         <button
           onClick={() => setActiveTab("details")}
           className={`flex-1 rounded-md py-2 text-sm font-bold transition-colors ${
-            activeTab === "details" ? "bg-white/[0.08] text-white" : "text-[#9da8b8] hover:text-white"
+            activeTab === "details" ? "bg-[#18c8f3] text-[#031016] shadow-[0_10px_24px_rgba(24,200,243,0.2)]" : "text-[#9da8b8] hover:text-white"
           }`}
         >
           Details
@@ -44,7 +44,7 @@ export function CardTabs({ profile, phone, cardUrl, qrUrl }: CardTabsProps) {
         <button
           onClick={() => setActiveTab("qr")}
           className={`flex-1 rounded-md py-2 text-sm font-bold transition-colors ${
-            activeTab === "qr" ? "bg-white/[0.08] text-white" : "text-[#9da8b8] hover:text-white"
+            activeTab === "qr" ? "bg-[#18c8f3] text-[#031016] shadow-[0_10px_24px_rgba(24,200,243,0.2)]" : "text-[#9da8b8] hover:text-white"
           }`}
         >
           QR Code
@@ -58,7 +58,7 @@ export function CardTabs({ profile, phone, cardUrl, qrUrl }: CardTabsProps) {
           <div className="grid gap-3 px-5 pb-5">
             {phone ? (
               <a
-                className="rounded-lg border border-white/10 bg-white/[0.06] px-4 py-3 text-center font-bold text-[#f7f4ed]"
+                className="rounded-lg border border-white/10 bg-white/[0.06] px-4 py-3 text-center font-bold text-[#f7f4ed] transition-colors hover:border-[#18c8f3]/35 hover:bg-[#18c8f3]/10"
                 href={`tel:${phone}`}
               >
                 Call
@@ -66,7 +66,7 @@ export function CardTabs({ profile, phone, cardUrl, qrUrl }: CardTabsProps) {
             ) : null}
             {profile.email ? (
               <a
-                className="rounded-lg border border-white/10 bg-white/[0.06] px-4 py-3 text-center font-bold text-[#f7f4ed]"
+                className="rounded-lg border border-white/10 bg-white/[0.06] px-4 py-3 text-center font-bold text-[#f7f4ed] transition-colors hover:border-[#18c8f3]/35 hover:bg-[#18c8f3]/10"
                 href={`mailto:${profile.email}`}
               >
                 Email
@@ -74,7 +74,7 @@ export function CardTabs({ profile, phone, cardUrl, qrUrl }: CardTabsProps) {
             ) : null}
             {profile.website ? (
               <a
-                className="rounded-lg border border-white/10 bg-white/[0.06] px-4 py-3 text-center font-bold text-[#f7f4ed]"
+                className="rounded-lg border border-white/10 bg-white/[0.06] px-4 py-3 text-center font-bold text-[#f7f4ed] transition-colors hover:border-[#18c8f3]/35 hover:bg-[#18c8f3]/10"
                 href={profile.website}
                 rel="noreferrer"
                 target="_blank"
@@ -86,7 +86,7 @@ export function CardTabs({ profile, phone, cardUrl, qrUrl }: CardTabsProps) {
             {profile.socialLinks && profile.socialLinks.length > 0 && profile.socialLinks.map((link, i) => (
               <a
                 key={i}
-                className="rounded-lg border border-white/10 bg-white/[0.06] px-4 py-3 text-center font-bold text-[#f7f4ed]"
+                className="rounded-lg border border-white/10 bg-white/[0.06] px-4 py-3 text-center font-bold text-[#f7f4ed] transition-colors hover:border-[#18c8f3]/35 hover:bg-[#18c8f3]/10"
                 href={link}
                 rel="noreferrer"
                 target="_blank"
@@ -106,7 +106,7 @@ export function CardTabs({ profile, phone, cardUrl, qrUrl }: CardTabsProps) {
         </div>
       ) : (
         <div className="flex flex-col items-center animate-in fade-in zoom-in-95 duration-200 px-5 pb-5">
-          <img src={qrUrl} alt="Connect card QR code" className="h-48 w-48 rounded-lg bg-white p-2" />
+          <img src={qrUrl} alt="Connect card QR code" className="h-48 w-48 rounded-lg bg-white p-2 shadow-[0_20px_54px_rgba(24,200,243,0.18)]" />
           <p className="mt-4 text-center text-sm leading-5 text-[#9da8b8]">
             Same card link, ready for any camera to scan.
           </p>

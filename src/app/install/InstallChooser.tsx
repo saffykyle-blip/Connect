@@ -54,8 +54,16 @@ export function InstallChooser() {
   const primaryClassName = "mt-6 flex min-h-12 items-center justify-center rounded-lg bg-[#18c8f3] px-5 text-center font-black text-[#031016] shadow-[0_12px_28px_rgba(24,200,243,0.22)]";
 
   return (
-    <main className="min-h-screen bg-[#090b0f] text-[#f7f4ed]">
-      <div className="mx-auto flex min-h-screen w-full max-w-2xl flex-col px-5 py-5">
+    <main className="relative min-h-screen overflow-hidden bg-[#06080d] text-[#f7f4ed]">
+      <div className="connect-hero-bg" aria-hidden="true" />
+      <div className="connect-orbit-field" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+        <span />
+      </div>
+
+      <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-2xl flex-col px-5 py-5">
         <header className="mb-6 flex items-center justify-between gap-4">
           <Link className="flex items-center gap-3" href="/">
             <img src="/logo.jpg" alt="Connect" className="h-11 w-11 rounded-lg object-cover" />
@@ -66,7 +74,7 @@ export function InstallChooser() {
           </span>
         </header>
 
-        <section className="rounded-lg border border-white/10 bg-[#111720] p-6 shadow-2xl">
+        <section className="rounded-lg border border-white/10 bg-[#101722]/90 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.44)] backdrop-blur-xl">
           <h1 className="text-3xl font-black tracking-normal">{copy.title}</h1>
           <p className="mt-3 max-w-xl text-base leading-7 text-[#aab6c6]">{copy.body}</p>
 

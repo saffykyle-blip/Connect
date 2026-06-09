@@ -125,7 +125,7 @@ export function ConnectBuilder({ customerCode }: { customerCode?: string }) {
       } else {
         setMessage("Failed to upload avatar.");
       }
-    } catch (error) {
+    } catch {
       setMessage("Error uploading avatar.");
     } finally {
       setIsUploading(false);
@@ -152,9 +152,17 @@ export function ConnectBuilder({ customerCode }: { customerCode?: string }) {
   }
 
   return (
-    <main className="min-h-screen bg-[#090b0f] text-[#f7f4ed]">
-      <div className="mx-auto grid min-h-screen w-full max-w-6xl gap-5 px-5 py-5 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-start">
-        <section className="rounded-lg border border-white/10 bg-[#111720] p-5 shadow-2xl lg:sticky lg:top-5">
+    <main className="relative min-h-screen overflow-hidden bg-[#06080d] text-[#f7f4ed]">
+      <div className="connect-hero-bg" aria-hidden="true" />
+      <div className="connect-orbit-field" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+        <span />
+      </div>
+
+      <div className="relative z-10 mx-auto grid min-h-screen w-full max-w-6xl gap-5 px-5 py-5 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-start">
+        <section className="rounded-lg border border-white/10 bg-[#101722]/90 p-5 shadow-[0_24px_80px_rgba(0,0,0,0.44)] backdrop-blur-xl lg:sticky lg:top-5">
           <header className="mb-5 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <img
@@ -167,7 +175,7 @@ export function ConnectBuilder({ customerCode }: { customerCode?: string }) {
                 <p className="text-sm text-[#9da8b8]">NFC business card builder</p>
               </div>
             </div>
-            <Link className="rounded-lg border border-white/10 bg-white/[0.06] px-3 py-2 text-sm font-bold text-[#cbd6e4]" href="/install">
+            <Link className="rounded-lg border border-[#18c8f3]/35 bg-[#18c8f3]/10 px-3 py-2 text-sm font-black text-[#c9f5ff] transition-colors hover:bg-[#18c8f3]/18" href="/install">
               Install
             </Link>
           </header>
@@ -178,10 +186,10 @@ export function ConnectBuilder({ customerCode }: { customerCode?: string }) {
               <button
                 key={index}
                 onClick={() => { setActiveIndex(index); setMessage(""); }}
-                className={`truncate rounded-lg border py-2 text-sm font-bold transition-colors ${
+                className={`truncate rounded-lg border px-2 py-3 text-sm font-black transition-all ${
                   activeIndex === index
-                    ? "border-[#18c8f3] bg-[#18c8f3]/10 text-[#18c8f3]"
-                    : "border-white/10 bg-white/[0.04] text-[#9da8b8] hover:bg-white/[0.08]"
+                    ? "border-[#18c8f3] bg-[#18c8f3]/12 text-[#c9f5ff] shadow-[0_0_28px_rgba(24,200,243,0.12)]"
+                    : "border-white/10 bg-white/[0.04] text-[#9da8b8] hover:border-white/20 hover:bg-white/[0.08]"
                 }`}
               >
                 {p.company || `Profile ${index + 1}`}
@@ -235,12 +243,17 @@ export function ConnectBuilder({ customerCode }: { customerCode?: string }) {
                   placeholder="https://instagram.com/yourhandle"
                   value={newSocialLink}
                   onChange={(e) => setNewSocialLink(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && addSocialLink()}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      addSocialLink();
+                    }
+                  }}
                 />
                 <button
                   type="button"
                   onClick={addSocialLink}
-                  className="rounded-lg bg-white/[0.08] px-4 font-black text-[#18c8f3] hover:bg-white/[0.12]"
+                  className="rounded-lg border border-[#18c8f3]/25 bg-[#18c8f3]/10 px-4 font-black text-[#c9f5ff] hover:bg-[#18c8f3]/18"
                 >
                   +
                 </button>
@@ -255,7 +268,7 @@ export function ConnectBuilder({ customerCode }: { customerCode?: string }) {
                         onClick={() => removeSocialLink(i)}
                         className="flex h-5 w-5 items-center justify-center rounded-full hover:bg-white/10 hover:text-white"
                       >
-                        ×
+                        x
                       </button>
                     </div>
                   ))}
@@ -299,7 +312,7 @@ export function ConnectBuilder({ customerCode }: { customerCode?: string }) {
           <p className="mt-3 min-h-5 text-sm text-[#9da8b8]">{message}</p>
         </section>
 
-        <aside className="rounded-lg border border-white/10 bg-[#111720] shadow-2xl">
+        <aside className="overflow-hidden rounded-lg border border-white/10 bg-[#101722]/90 shadow-[0_24px_80px_rgba(0,0,0,0.44)] backdrop-blur-xl">
           <div className="bg-[radial-gradient(circle_at_50%_0%,rgba(24,200,243,0.18),transparent_58%),linear-gradient(145deg,rgba(246,184,74,0.15),transparent_48%)] px-6 pb-6 pt-7 text-center">
             <div className="mx-auto mb-5 flex h-28 w-28 items-center justify-center overflow-hidden rounded-lg border border-white/15 bg-white/[0.07] text-4xl font-black text-[#18c8f3]">
               {profile.avatar ? (

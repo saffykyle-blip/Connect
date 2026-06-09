@@ -8,7 +8,6 @@ import {
   initials,
   normalizePhone,
   profileFromSearchParams,
-  vCardDataUri,
   type ConnectProfile,
 } from "@/lib/connect-card";
 import { CardTabs } from "./CardTabs";
@@ -56,7 +55,7 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
 
 function CardSkeleton() {
   return (
-    <section className="overflow-hidden rounded-lg border border-white/10 bg-[#111720] shadow-2xl animate-pulse">
+    <section className="animate-pulse overflow-hidden rounded-lg border border-white/10 bg-[#101722]/90 shadow-[0_24px_80px_rgba(0,0,0,0.44)] backdrop-blur-xl">
       <div className="bg-[radial-gradient(circle_at_50%_0%,rgba(24,200,243,0.1),transparent_55%)] px-6 pb-6 pt-7 text-center">
         <div className="mx-auto mb-5 h-28 w-28 rounded-lg bg-white/10"></div>
         <div className="mx-auto h-8 w-48 rounded bg-white/10"></div>
@@ -75,7 +74,7 @@ function CardSkeleton() {
 
 function ProfileUnavailable() {
   return (
-    <section className="overflow-hidden rounded-lg border border-white/10 bg-[#111720] p-10 shadow-2xl text-center">
+    <section className="overflow-hidden rounded-lg border border-white/10 bg-[#101722]/90 p-10 text-center shadow-[0_24px_80px_rgba(0,0,0,0.44)] backdrop-blur-xl">
       <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-red-500/10 text-red-500">
         <svg className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -96,6 +95,8 @@ async function SubscriptionVerifiedCard({ profile, host }: { profile: ConnectPro
 
   const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
   if (PAYSTACK_SECRET_KEY) {
+    let isInactive = false;
+
     try {
       const res = await fetch(`https://api.paystack.co/subscription?customer=${profile.subId}&status=active`, {
         headers: { Authorization: `Bearer ${PAYSTACK_SECRET_KEY}` },
@@ -104,11 +105,15 @@ async function SubscriptionVerifiedCard({ profile, host }: { profile: ConnectPro
       const data = await res.json();
       
       if (!data.status || data.meta?.total === 0) {
-        return <ProfileUnavailable />;
+        isInactive = true;
       }
     } catch (e) {
       console.error("Paystack validation failed", e);
       // Fail open if Paystack is down to not block legitimately paying customers
+    }
+
+    if (isInactive) {
+      return <ProfileUnavailable />;
     }
   }
 
@@ -118,7 +123,7 @@ async function SubscriptionVerifiedCard({ profile, host }: { profile: ConnectPro
   const qrUrl = `https://quickchart.io/qr?size=280&margin=2&text=${encodeURIComponent(cardUrl)}`;
 
   return (
-    <section className="overflow-hidden rounded-lg border border-white/10 bg-[#111720] shadow-2xl">
+    <section className="overflow-hidden rounded-lg border border-white/10 bg-[#101722]/90 shadow-[0_24px_80px_rgba(0,0,0,0.44)] backdrop-blur-xl">
       <div className="bg-[radial-gradient(circle_at_50%_0%,rgba(24,200,243,0.18),transparent_55%),linear-gradient(145deg,rgba(246,184,74,0.16),transparent_45%)] px-6 pb-6 pt-7 text-center">
         <div className="mx-auto mb-5 flex h-28 w-28 items-center justify-center overflow-hidden rounded-lg border border-white/15 bg-white/[0.07] text-4xl font-black text-[#18c8f3]">
           {profile.avatar ? (
@@ -141,8 +146,16 @@ export default async function CardPage({ searchParams }: PageProps) {
   const host = (await headers()).get("host") || "web-profiles.vercel.app";
 
   return (
-    <main className="min-h-screen bg-[#090b0f] text-[#f7f4ed]">
-      <div className="mx-auto flex min-h-screen w-full max-w-lg flex-col px-5 py-5">
+    <main className="relative min-h-screen overflow-hidden bg-[#06080d] text-[#f7f4ed]">
+      <div className="connect-hero-bg" aria-hidden="true" />
+      <div className="connect-orbit-field" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+        <span />
+      </div>
+
+      <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-lg flex-col px-5 py-5">
         <header className="mb-5 flex items-center justify-between gap-4">
           <Link className="flex items-center gap-3" href="/">
             <img
