@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import Link from "next/link";
 import {
   buildCardUrl,
@@ -13,18 +13,22 @@ import {
   type ConnectProfile,
 } from "@/lib/connect-card";
 
-const storageKey = "connect_profile_builder_v1";
+const storageKey = "connect_profiles_v2";
 
-const starterProfile: ConnectProfile = {
-  ...emptyProfile,
-  name: "Kyle Saffy",
-  company: "Connect",
-  title: "Founder",
-  phone: "+27827675092",
-  email: "hello@example.com",
-  website: "https://example.com",
-  bio: "Tap, connect, and save my details.",
-};
+const defaultProfiles: ConnectProfile[] = [
+  {
+    ...emptyProfile,
+    name: "Kyle Saffy",
+    company: "CREAM",
+    title: "Founder",
+    phone: "+27827675092",
+    email: "hello@example.com",
+    website: "https://example.com",
+    bio: "Tap, connect, and save my details.",
+  },
+  { ...emptyProfile, company: "Tribal", name: "Kyle Saffy" },
+  { ...emptyProfile, company: "Nanotech", name: "Kyle Saffy" },
+];
 
 type Field = keyof ConnectProfile;
 
@@ -35,29 +39,42 @@ const fields: Array<{ key: Field; label: string; placeholder: string; type?: str
   { key: "phone", label: "Phone", placeholder: "+27 82 000 0000", type: "tel" },
   { key: "email", label: "Email", placeholder: "hello@example.com", type: "email" },
   { key: "website", label: "Website", placeholder: "https://example.com", type: "url" },
-  { key: "avatar", label: "Avatar image URL", placeholder: "https://example.com/avatar.jpg", type: "url" },
 ];
 
 export function ConnectBuilder() {
   const [origin] = useState(() => {
     return typeof window === "undefined" ? "https://web-profiles.vercel.app" : window.location.origin;
   });
-  const [profile, setProfile] = useState<ConnectProfile>(() => {
-    if (typeof window === "undefined") return starterProfile;
-    const saved = window.localStorage.getItem(storageKey);
-    if (!saved) return starterProfile;
 
+  const [profiles, setProfiles] = useState<ConnectProfile[]>(() => {
+    if (typeof window === "undefined") return defaultProfiles;
+    const saved = window.localStorage.getItem(storageKey);
+    if (!saved) return defaultProfiles;
     try {
-      return { ...starterProfile, ...JSON.parse(saved) };
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return [
+          { ...emptyProfile, ...parsed[0] },
+          { ...emptyProfile, ...(parsed[1] || {}) },
+          { ...emptyProfile, ...(parsed[2] || {}) },
+        ].slice(0, 3);
+      }
+      return defaultProfiles;
     } catch {
-      return starterProfile;
+      return defaultProfiles;
     }
   });
+
+  const [activeIndex, setActiveIndex] = useState(0);
   const [message, setMessage] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const profile = profiles[activeIndex] || defaultProfiles[0];
 
   useEffect(() => {
-    window.localStorage.setItem(storageKey, JSON.stringify(profile));
-  }, [profile]);
+    window.localStorage.setItem(storageKey, JSON.stringify(profiles));
+  }, [profiles]);
 
   const cardUrl = useMemo(() => buildCardUrl(origin, {
     ...profile,
@@ -68,8 +85,40 @@ export function ConnectBuilder() {
   const qrUrl = `https://quickchart.io/qr?size=260&margin=2&text=${encodeURIComponent(cardUrl)}`;
 
   function updateField(key: Field, value: string) {
-    setProfile((current) => ({ ...current, [key]: value }));
+    const updatedProfiles = [...profiles];
+    updatedProfiles[activeIndex] = { ...profile, [key]: value };
+    setProfiles(updatedProfiles);
     setMessage("Saved locally.");
+  }
+
+  async function handleAvatarUpload(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    setMessage("Uploading avatar...");
+
+    try {
+      const response = await fetch(`/api/upload?filename=${encodeURIComponent(file.name)}`, {
+        method: 'POST',
+        body: file,
+      });
+      const data = await response.json();
+      
+      if (data.url) {
+        updateField('avatar', data.url);
+        setMessage("Avatar uploaded successfully.");
+      } else {
+        setMessage("Failed to upload avatar.");
+      }
+    } catch (error) {
+      setMessage("Error uploading avatar.");
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
   }
 
   async function copyCardUrl() {
@@ -82,8 +131,10 @@ export function ConnectBuilder() {
   }
 
   function resetProfile() {
-    setProfile(starterProfile);
-    setMessage("Starter profile restored.");
+    const updatedProfiles = [...profiles];
+    updatedProfiles[activeIndex] = defaultProfiles[activeIndex];
+    setProfiles(updatedProfiles);
+    setMessage("Profile restored to default.");
   }
 
   return (
@@ -107,7 +158,46 @@ export function ConnectBuilder() {
             </Link>
           </header>
 
+          {/* Profile Selector Tiles */}
+          <div className="mb-6 grid grid-cols-3 gap-2">
+            {profiles.map((p, index) => (
+              <button
+                key={index}
+                onClick={() => { setActiveIndex(index); setMessage(""); }}
+                className={`truncate rounded-lg border py-2 text-sm font-bold transition-colors ${
+                  activeIndex === index
+                    ? "border-[#18c8f3] bg-[#18c8f3]/10 text-[#18c8f3]"
+                    : "border-white/10 bg-white/[0.04] text-[#9da8b8] hover:bg-white/[0.08]"
+                }`}
+              >
+                {p.company || `Profile ${index + 1}`}
+              </button>
+            ))}
+          </div>
+
           <div className="grid gap-3 sm:grid-cols-2">
+            {/* Avatar Upload */}
+            <label className="grid gap-2 text-sm font-bold text-[#d6dee9] sm:col-span-2">
+              Avatar Image
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-white/10 bg-white/[0.055]">
+                  {profile.avatar ? (
+                    <img src={normalizeUrl(profile.avatar)} className="h-full w-full object-cover" alt="Avatar preview" />
+                  ) : (
+                    <span className="text-xs text-[#9da8b8]">None</span>
+                  )}
+                </div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  ref={fileInputRef}
+                  onChange={handleAvatarUpload}
+                  disabled={isUploading}
+                  className="block w-full text-sm text-[#9da8b8] file:mr-4 file:rounded-lg file:border file:border-white/10 file:bg-white/[0.06] file:px-4 file:py-2 file:text-sm file:font-bold file:text-[#f7f4ed] hover:file:bg-white/[0.1] disabled:opacity-50"
+                />
+              </div>
+            </label>
+
             {fields.map((field) => (
               <label className="grid gap-2 text-sm font-bold text-[#d6dee9]" key={field.key}>
                 {field.label}

@@ -10,6 +10,7 @@ import {
   vCardDataUri,
   type ConnectProfile,
 } from "@/lib/connect-card";
+import { CardTabs } from "./CardTabs";
 
 type PageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -83,55 +84,10 @@ export default async function CardPage({ searchParams }: PageProps) {
               )}
             </div>
             <h1 className="text-3xl font-black leading-tight tracking-normal">{displayName(profile)}</h1>
-            {role ? <p className="mt-2 text-base font-medium text-[#cbd6e4]">{role}</p> : null}
-            {profile.bio ? <p className="mx-auto mt-4 max-w-sm text-sm leading-6 text-[#aab6c6]">{profile.bio}</p> : null}
+            {role ? <p className="mt-2 pb-5 text-base font-medium text-[#cbd6e4]">{role}</p> : <div className="pb-5" />}
           </div>
 
-          <div className="grid gap-3 p-5">
-            {phone ? (
-              <a
-                className="rounded-lg border border-white/10 bg-white/[0.06] px-4 py-3 text-center font-bold text-[#f7f4ed]"
-                href={`tel:${phone}`}
-              >
-                Call
-              </a>
-            ) : null}
-            {profile.email ? (
-              <a
-                className="rounded-lg border border-white/10 bg-white/[0.06] px-4 py-3 text-center font-bold text-[#f7f4ed]"
-                href={`mailto:${profile.email}`}
-              >
-                Email
-              </a>
-            ) : null}
-            {profile.website ? (
-              <a
-                className="rounded-lg border border-white/10 bg-white/[0.06] px-4 py-3 text-center font-bold text-[#f7f4ed]"
-                href={profile.website}
-                rel="noreferrer"
-                target="_blank"
-              >
-                Website
-              </a>
-            ) : null}
-            <a
-              className="rounded-lg border border-[#18c8f3]/60 bg-[#18c8f3] px-4 py-3 text-center font-black text-[#031016] shadow-[0_12px_28px_rgba(24,200,243,0.22)]"
-              download={`${displayName(profile).replace(/\s+/g, "_")}_Connect.vcf`}
-              href={vCardDataUri(profile, cardUrl)}
-            >
-              Save Contact
-            </a>
-          </div>
-        </section>
-
-        <section className="mt-5 rounded-lg border border-white/10 bg-[#111720] p-5">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <h2 className="text-base font-black tracking-normal">QR fallback</h2>
-              <p className="mt-1 text-sm leading-5 text-[#9da8b8]">Same card link, ready for screens and Apple Wallet flows.</p>
-            </div>
-            <img src={qrUrl} alt="Connect card QR code" className="h-28 w-28 rounded-lg bg-white p-2" />
-          </div>
+          <CardTabs profile={profile} phone={phone} cardUrl={cardUrl} qrUrl={qrUrl} />
         </section>
       </div>
     </main>
