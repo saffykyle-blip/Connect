@@ -55,6 +55,20 @@ export function ConnectBuilder({ customerCode }: { customerCode?: string }) {
     return typeof window === "undefined" ? "https://web-profiles.vercel.app" : window.location.origin;
   });
 
+  if (!customerCode) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-[#090b0f] p-5 text-center">
+        <div className="mx-auto max-w-md rounded-2xl border border-[#f6b84a]/40 bg-[#111720] p-8 shadow-2xl">
+          <h2 className="mb-3 text-xl font-bold text-[#f6b84a]">Session Update Required</h2>
+          <p className="mb-6 text-sm text-[#cbd6e4]">Your browser session is missing the required Paystack subscription link. To fix this, please return to the home page and use the <strong>Restore Access</strong> feature with your email address.</p>
+          <Link href="/" className="rounded-lg bg-[#f6b84a] px-6 py-3 font-bold text-black transition-transform hover:scale-[1.02]">
+            Go to Home Page
+          </Link>
+        </div>
+      </main>
+    );
+  }
+
   const [profiles, setProfiles] = useState<ConnectProfile[]>(() => {
     if (typeof window === "undefined") return defaultProfiles;
     const saved = window.localStorage.getItem(storageKey);
