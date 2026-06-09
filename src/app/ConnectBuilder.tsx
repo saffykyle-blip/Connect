@@ -41,7 +41,7 @@ const fields: Array<{ key: Field; label: string; placeholder: string; type?: str
   { key: "website", label: "Website", placeholder: "https://example.com", type: "url" },
 ];
 
-export function ConnectBuilder() {
+export function ConnectBuilder({ customerCode }: { customerCode?: string }) {
   const [origin] = useState(() => {
     return typeof window === "undefined" ? "https://web-profiles.vercel.app" : window.location.origin;
   });
@@ -81,7 +81,8 @@ export function ConnectBuilder() {
     ...profile,
     website: normalizeUrl(profile.website),
     avatar: normalizeUrl(profile.avatar),
-  }), [origin, profile]);
+    subId: customerCode,
+  }), [origin, profile, customerCode]);
 
   const qrUrl = `https://quickchart.io/qr?size=260&margin=2&text=${encodeURIComponent(cardUrl)}`;
 

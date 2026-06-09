@@ -24,9 +24,10 @@ export async function GET(request: Request) {
     const data = await response.json();
 
     if (data.status && data.data?.status === "success") {
-      // Payment verified!
+      const customerCode = data.data.customer?.customer_code;
+      
       const res = NextResponse.redirect(`${origin}/builder`);
-      // Set long-lived secure cookie
+      
       res.cookies.set({
         name: 'connect_access',
         value: 'true',
@@ -34,8 +35,21 @@ export async function GET(request: Request) {
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
         path: '/',
-        maxAge: 60 * 60 * 24 * 365 * 10, // 10 years
+        maxAge: 60 * 60 * 24 * 365 * 10,
       });
+
+      if (customerCode) {
+        res.cookies.set({
+          name: 'connect_customer',
+          value: customerCode,
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'lax',
+          path: '/',
+          maxAge: 60 * 60 * 24 * 365 * 10,
+        });
+      }
+
       return res;
     } else {
       return NextResponse.redirect(`${origin}/?error=payment_failed`);

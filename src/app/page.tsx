@@ -38,10 +38,10 @@ export default function LandingPage() {
         </p>
 
         <div className="mx-auto max-w-md rounded-2xl border border-white/10 bg-[#111720] p-8 shadow-2xl">
-          <h2 className="mb-2 text-2xl font-black text-white">Lifetime Access</h2>
+          <h2 className="mb-2 text-2xl font-black text-white">Monthly Subscription</h2>
           <div className="mb-6 flex items-baseline justify-center gap-2">
             <span className="text-4xl font-black text-[#18c8f3]">R50</span>
-            <span className="text-[#9da8b8] font-medium">once-off</span>
+            <span className="text-[#9da8b8] font-medium">per month</span>
           </div>
           
           <ul className="mb-8 space-y-3 text-sm text-[#cbd6e4] text-left">
