@@ -7,6 +7,7 @@ export type ConnectProfile = {
   website: string;
   avatar: string;
   bio: string;
+  socialLinks?: string[];
 };
 
 export const emptyProfile: ConnectProfile = {
@@ -18,6 +19,7 @@ export const emptyProfile: ConnectProfile = {
   website: "",
   avatar: "",
   bio: "",
+  socialLinks: [],
 };
 
 type SearchValue = string | string[] | undefined;
@@ -51,6 +53,7 @@ export function profileFromSearchParams(
     website: normalizeUrl(firstValue(searchParams.website)),
     avatar: normalizeUrl(firstValue(searchParams.avatar)),
     bio: firstValue(searchParams.bio).trim(),
+    socialLinks: firstValue(searchParams.socials).split("|").filter(Boolean).map(normalizeUrl),
   };
 }
 
@@ -91,6 +94,12 @@ export function buildVCard(profile: ConnectProfile, cardUrl: string): string {
   if (cardUrl) lines.push(`URL;TYPE=PROFILE:${escapeVCard(cardUrl)}`);
   if (profile.avatar) lines.push(`PHOTO;VALUE=URI:${escapeVCard(profile.avatar)}`);
   if (profile.bio) lines.push(`NOTE:${escapeVCard(profile.bio)}`);
+  
+  if (profile.socialLinks && profile.socialLinks.length > 0) {
+    profile.socialLinks.forEach(link => {
+      lines.push(`URL;TYPE=SOCIAL:${escapeVCard(link)}`);
+    });
+  }
 
   lines.push("END:VCARD");
   return lines.join("\r\n");
@@ -103,8 +112,15 @@ export function vCardDataUri(profile: ConnectProfile, cardUrl: string): string {
 export function buildCardUrl(origin: string, profile: ConnectProfile): string {
   const url = new URL("/card", origin);
   Object.entries(profile).forEach(([key, value]) => {
-    const normalized = key === "website" || key === "avatar" ? normalizeUrl(value) : value.trim();
-    if (normalized) url.searchParams.set(key, normalized);
+    if (key === "socialLinks") {
+      const links = value as string[];
+      if (links && links.length > 0) {
+        url.searchParams.set("socials", links.join("|"));
+      }
+    } else {
+      const normalized = key === "website" || key === "avatar" ? normalizeUrl(value as string) : (value as string).trim();
+      if (normalized) url.searchParams.set(key, normalized);
+    }
   });
   return url.toString();
 }

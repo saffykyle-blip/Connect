@@ -11,6 +11,22 @@ type CardTabsProps = {
   qrUrl: string;
 };
 
+function detectSocialPlatform(url: string): string {
+  try {
+    const hostname = new URL(url).hostname.toLowerCase();
+    if (hostname.includes('instagram.com')) return 'Instagram';
+    if (hostname.includes('linkedin.com')) return 'LinkedIn';
+    if (hostname.includes('twitter.com') || hostname.includes('x.com')) return 'X (Twitter)';
+    if (hostname.includes('facebook.com')) return 'Facebook';
+    if (hostname.includes('tiktok.com')) return 'TikTok';
+    if (hostname.includes('youtube.com')) return 'YouTube';
+    if (hostname.includes('github.com')) return 'GitHub';
+    return 'Social Link';
+  } catch {
+    return 'Social Link';
+  }
+}
+
 export function CardTabs({ profile, phone, cardUrl, qrUrl }: CardTabsProps) {
   const [activeTab, setActiveTab] = useState<"details" | "qr">("details");
 
@@ -66,6 +82,19 @@ export function CardTabs({ profile, phone, cardUrl, qrUrl }: CardTabsProps) {
                 Website
               </a>
             ) : null}
+            
+            {profile.socialLinks && profile.socialLinks.length > 0 && profile.socialLinks.map((link, i) => (
+              <a
+                key={i}
+                className="rounded-lg border border-white/10 bg-white/[0.06] px-4 py-3 text-center font-bold text-[#f7f4ed]"
+                href={link}
+                rel="noreferrer"
+                target="_blank"
+              >
+                {detectSocialPlatform(link)}
+              </a>
+            ))}
+
             <a
               className="rounded-lg border border-[#18c8f3]/60 bg-[#18c8f3] px-4 py-3 text-center font-black text-[#031016] shadow-[0_12px_28px_rgba(24,200,243,0.22)]"
               download={`${displayName(profile).replace(/\s+/g, "_")}_Connect.vcf`}

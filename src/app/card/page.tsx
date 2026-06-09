@@ -21,7 +21,14 @@ function absoluteCardUrl(host: string, profile: ConnectProfile): string {
   const url = new URL("/card", `${protocol}://${host}`);
 
   Object.entries(profile).forEach(([key, value]) => {
-    if (value) url.searchParams.set(key, value);
+    if (key === "socialLinks") {
+      const links = value as string[];
+      if (links && links.length > 0) {
+        url.searchParams.set("socials", links.join("|"));
+      }
+    } else if (value) {
+      url.searchParams.set(key, value as string);
+    }
   });
 
   return url.toString();

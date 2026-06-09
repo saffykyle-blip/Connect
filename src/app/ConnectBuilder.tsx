@@ -68,6 +68,7 @@ export function ConnectBuilder() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [message, setMessage] = useState("");
   const [isUploading, setIsUploading] = useState(false);
+  const [newSocialLink, setNewSocialLink] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const profile = profiles[activeIndex] || defaultProfiles[0];
@@ -84,11 +85,23 @@ export function ConnectBuilder() {
 
   const qrUrl = `https://quickchart.io/qr?size=260&margin=2&text=${encodeURIComponent(cardUrl)}`;
 
-  function updateField(key: Field, value: string) {
+  function updateField<K extends Field>(key: K, value: ConnectProfile[K]) {
     const updatedProfiles = [...profiles];
     updatedProfiles[activeIndex] = { ...profile, [key]: value };
     setProfiles(updatedProfiles);
     setMessage("Saved locally.");
+  }
+
+  function addSocialLink() {
+    if (!newSocialLink.trim()) return;
+    const currentLinks = profile.socialLinks || [];
+    updateField("socialLinks", [...currentLinks, newSocialLink.trim()]);
+    setNewSocialLink("");
+  }
+
+  function removeSocialLink(index: number) {
+    const currentLinks = profile.socialLinks || [];
+    updateField("socialLinks", currentLinks.filter((_, i) => i !== index));
   }
 
   async function handleAvatarUpload(event: React.ChangeEvent<HTMLInputElement>) {
@@ -211,6 +224,43 @@ export function ConnectBuilder() {
                 />
               </label>
             ))}
+
+            {/* Social Links */}
+            <div className="grid gap-2 sm:col-span-2">
+              <label className="text-sm font-bold text-[#d6dee9]">Social Links</label>
+              <div className="flex gap-2">
+                <input
+                  className="flex-1 rounded-lg border border-white/10 bg-white/[0.055] px-3 py-3 text-[#f7f4ed] outline-none focus:border-[#18c8f3]"
+                  placeholder="https://instagram.com/yourhandle"
+                  value={newSocialLink}
+                  onChange={(e) => setNewSocialLink(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && addSocialLink()}
+                />
+                <button
+                  type="button"
+                  onClick={addSocialLink}
+                  className="rounded-lg bg-white/[0.08] px-4 font-black text-[#18c8f3] hover:bg-white/[0.12]"
+                >
+                  +
+                </button>
+              </div>
+              {profile.socialLinks && profile.socialLinks.length > 0 && (
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {profile.socialLinks.map((link, i) => (
+                    <div key={i} className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] pl-3 pr-1 py-1 text-xs text-[#9da8b8]">
+                      <span className="truncate max-w-[150px]">{link.replace(/^https?:\/\//, '')}</span>
+                      <button
+                        type="button"
+                        onClick={() => removeSocialLink(i)}
+                        className="flex h-5 w-5 items-center justify-center rounded-full hover:bg-white/10 hover:text-white"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
             <label className="grid gap-2 text-sm font-bold text-[#d6dee9] sm:col-span-2">
               Short bio
               <textarea
