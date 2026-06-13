@@ -142,8 +142,11 @@ export function ConnectBuilder({ customerCode }: { customerCode?: string }) {
     setMessage("Uploading avatar...");
 
     try {
-      const response = await fetch(`/api/upload?filename=${encodeURIComponent(file.name)}`, {
+      const response = await fetch('/api/upload', {
         method: 'POST',
+        headers: {
+          'Content-Type': file.type || 'image/jpeg',
+        },
         body: file,
       });
       const data = await response.json();
@@ -152,7 +155,8 @@ export function ConnectBuilder({ customerCode }: { customerCode?: string }) {
         updateField('avatar', data.url);
         setMessage("Avatar uploaded successfully.");
       } else {
-        setMessage("Failed to upload avatar. Ensure Vercel Blob Token is set.");
+        const detail = data.detail || data.error || "Unknown error";
+        setMessage(`Failed to upload avatar: ${detail}`);
       }
     } catch {
       setMessage("Error uploading avatar. Are you online?");
@@ -188,7 +192,7 @@ export function ConnectBuilder({ customerCode }: { customerCode?: string }) {
           <header className="mb-4 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <img
-                src="/logo.jpg"
+                src="/thumbnail.png"
                 alt="Connect"
                 className="h-12 w-12 rounded-lg object-cover shadow-[0_0_24px_rgba(24,200,243,0.32)]"
               />

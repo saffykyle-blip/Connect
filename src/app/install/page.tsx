@@ -1,11 +1,15 @@
-import type { Metadata } from "next";
+import { Suspense } from "react";
 import { InstallChooser } from "./InstallChooser";
 
-export const metadata: Metadata = {
-  title: "Install Connect",
-  description: "Download Connect for Android or Huawei, or use the iPhone web and Wallet fallback.",
-};
-
+// InstallChooser uses useSearchParams() which requires a Suspense boundary
 export default function InstallPage() {
-  return <InstallChooser />;
+  return (
+    <Suspense fallback={
+      <main className="flex min-h-screen items-center justify-center bg-[#090b0f]">
+        <div className="text-[#9da8b8] text-sm">Loading...</div>
+      </main>
+    }>
+      <InstallChooser />
+    </Suspense>
+  );
 }

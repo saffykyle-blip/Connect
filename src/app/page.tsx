@@ -40,7 +40,11 @@ export default function LandingPage() {
       });
 
       if (res.ok) {
-        window.location.href = `/builder?customerCode=${encodeURIComponent(restoreEmail)}`;
+        const data = await res.json();
+        const installUrl = data.customerCode
+          ? `/install?code=${encodeURIComponent(data.customerCode)}`
+          : `/install`;
+        window.location.href = installUrl;
       } else {
         const error = await res.json();
         setRestoreMessage(error.error || "Failed to restore purchase.");
@@ -52,12 +56,13 @@ export default function LandingPage() {
     }
   };
 
+
   return (
     <main className="relative min-h-screen text-[#f7f4ed]">
       <div className="mx-auto w-full max-w-[480px] min-h-screen flex flex-col px-5 py-8 sm:py-12">
         <header className="mb-10 flex flex-col items-center text-center">
           <img
-            src="/logo.jpg"
+            src="/thumbnail.png"
             alt="Connect"
             className="mb-4 h-16 w-16 rounded-xl border border-white/10 object-cover shadow-[0_0_24px_rgba(24,200,243,0.35)]"
           />

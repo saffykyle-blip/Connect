@@ -81,35 +81,49 @@ function ProfileUnavailable() {
         </svg>
       </div>
       <h2 className="mb-3 text-2xl font-black text-white">Profile Unavailable</h2>
-      <p className="text-[#9da8b8] leading-relaxed">
-        This Connect digital business card is currently inactive or has been suspended.
+      <p className="mb-6 text-[#9da8b8] leading-relaxed">
+        This Connect digital business card is currently inactive or the subscription has lapsed.
+      </p>
+      <a
+        href="/"
+        className="inline-block rounded-lg bg-gradient-to-br from-[#13bde8] to-[#0d8fb3] px-6 py-3 text-sm font-black text-[#031016] shadow-[0_8px_20px_rgba(24,200,243,0.24)] transition-opacity hover:opacity-90"
+      >
+        Reactivate Subscription
+      </a>
+      <p className="mt-4 text-xs text-[#9da8b8]">
+        If you believe this is an error, restore access with your email on the home page.
       </p>
     </section>
   );
 }
 
 async function SubscriptionVerifiedCard({ profile, host }: { profile: ConnectProfile; host: string }) {
-  if (!profile.subId) {
+  // If there's no profile data at all, show a generic unavailable state
+  const hasProfileData = !!(profile.name || profile.company || profile.email || profile.phone);
+  if (!hasProfileData) {
     return <ProfileUnavailable />;
   }
 
-  const PAYSTACK_SECRET_KEY = "sk_test_c521c50c9ab2b643dfc88d3ebea1795cdd46a231";
-  if (PAYSTACK_SECRET_KEY) {
+  // Only validate subscription when the broadcaster has set their subId.
+  // Receiving phones should always be able to view the card — the subscription
+  // gate is for the card OWNER's feature access, not the VIEWER's.
+  if (profile.subId) {
+    const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY ?? "sk_test_c521c50c9ab2b643dfc88d3ebea1795cdd46a231";
     let isInactive = false;
 
     try {
       const res = await fetch(`https://api.paystack.co/subscription?customer=${profile.subId}&status=active`, {
         headers: { Authorization: `Bearer ${PAYSTACK_SECRET_KEY}` },
-        next: { revalidate: 60 } // Cache for 60 seconds to speed up immediate re-taps
+        next: { revalidate: 60 },
       });
       const data = await res.json();
-      
+
       if (!data.status || data.meta?.total === 0) {
         isInactive = true;
       }
     } catch (e) {
       console.error("Paystack validation failed", e);
-      // Fail open if Paystack is down to not block legitimately paying customers
+      // Fail open — don't block legitimate customers if Paystack is temporarily down
     }
 
     if (isInactive) {
@@ -161,7 +175,7 @@ export default async function CardPage({ searchParams }: PageProps) {
             <img
               src="/thumbnail.png"
               alt="Connect"
-              className="h-10 w-10 rounded-lg object-cover shadow-[0_0_22px_rgba(24,200,243,0.28)]"
+              className="h-10 w-10 rounded-xl object-cover shadow-[0_0_22px_rgba(24,200,243,0.35)]"
             />
             <span className="text-sm font-semibold text-[#cbd6e4]">Connect</span>
           </Link>
