@@ -24,7 +24,7 @@ export async function GET(request: Request) {
       body: JSON.stringify({
         email: email,
         amount: 5000, // ZAR 50.00 in cents
-        plan: "PLN_99pa84mf8310iyy",
+        plan: "PLN_9ppd9c5ri9hmr1f",
         currency: "ZAR",
         callback_url: `${origin}/api/verify`,
         metadata: {
