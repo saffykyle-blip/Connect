@@ -1,4 +1,5 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import { isFreeAccessCode } from "@/lib/free-access";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -11,13 +12,23 @@ export async function OPTIONS(): Promise<NextResponse> {
 }
 
 export async function GET(request: Request): Promise<NextResponse> {
-  const { searchParams } = new URL(request.url);
+  const { searchParams, origin } = new URL(request.url);
   const customerCode = searchParams.get("customer");
 
   if (!customerCode || !customerCode.startsWith("CUS_")) {
     return NextResponse.json(
       { error: "A valid CUS_xxx customer code is required" },
       { status: 400, headers: corsHeaders },
+    );
+  }
+
+  if (isFreeAccessCode(customerCode)) {
+    return NextResponse.json(
+      {
+        link: `${origin}/install?code=${encodeURIComponent(customerCode)}&mode=free`,
+        message: "Free testing access does not need a billing portal.",
+      },
+      { headers: corsHeaders },
     );
   }
 

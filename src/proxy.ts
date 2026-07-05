@@ -5,9 +5,8 @@ export function proxy(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl;
 
   // /install is accessible in two cases:
-  //   1. User has the connect_access cookie (paid subscriber)
-  //   2. URL contains ?code=CUS_... (just came from payment callback or restore)
-  // This lets the Paystack redirect land without being bounced back to home.
+  //   1. User has the connect_access cookie
+  //   2. URL contains ?code=CUS_... from checkout, restore, or free testing access
   if (pathname.startsWith('/install')) {
     const hasAccess = request.cookies.get('connect_access')?.value === 'true';
     const hasCode = searchParams.get('code')?.startsWith('CUS_');

@@ -73,7 +73,7 @@ export default function LandingPage() {
           {showRestore ? (
             <>
               <h2 className="mb-2 text-2xl font-black text-white">Restore Access</h2>
-              <p className="mb-6 text-sm text-[#cbd6e4]">Enter your email to restore your subscription.</p>
+              <p className="mb-6 text-sm text-[#cbd6e4]">Enter your email to restore your access.</p>
               
               <form onSubmit={handleRestore} className="grid gap-4 text-left">
                 <label className="grid gap-1 text-sm font-bold text-[#d6dee9]">
@@ -93,7 +93,7 @@ export default function LandingPage() {
                   disabled={isRestoring}
                   className="mt-2 rounded-lg bg-gradient-to-br from-[#13bde8] to-[#0d8fb3] border border-[#18c8f3]/65 px-4 py-3 font-black text-[#031016] shadow-[0_10px_22px_rgba(24,200,243,0.24)] transition-opacity disabled:opacity-50"
                 >
-                  {isRestoring ? "Restoring..." : "Restore Purchase"}
+                  {isRestoring ? "Restoring..." : "Restore Access"}
                 </button>
                 {restoreMessage && <p className="text-center text-sm font-medium text-[#f6b84a]">{restoreMessage}</p>}
               </form>
@@ -110,10 +110,10 @@ export default function LandingPage() {
             </>
           ) : (
             <>
-              <h2 className="mb-2 text-2xl font-black text-white">Monthly Subscription</h2>
+              <h2 className="mb-2 text-2xl font-black text-white">Free Testing Access</h2>
               <div className="mb-6 flex items-baseline gap-2">
-                <span className="text-4xl font-black text-[#18c8f3]">R50</span>
-                <span className="text-[#9da8b8] font-medium">per month</span>
+                <span className="text-4xl font-black text-[#18c8f3]">Free</span>
+                <span className="text-[#9da8b8] font-medium">while testing</span>
               </div>
               
               <ul className="mb-8 space-y-3 text-sm text-[#cbd6e4] text-left">
@@ -160,7 +160,7 @@ export default function LandingPage() {
                   disabled={isLoading}
                   className="mt-2 rounded-lg bg-gradient-to-br from-[#13bde8] to-[#0d8fb3] border border-[#18c8f3]/65 px-4 py-3 font-black text-[#031016] shadow-[0_10px_22px_rgba(24,200,243,0.24)] transition-opacity disabled:opacity-50"
                 >
-                  {isLoading ? "Redirecting..." : "Subscribe with Paystack"}
+                  {isLoading ? "Creating access..." : "Get Free Test Access"}
                 </button>
               </form>
               
@@ -170,7 +170,7 @@ export default function LandingPage() {
                   onClick={() => setShowRestore(true)}
                   className="text-sm font-medium text-[#9da8b8] hover:text-white transition-colors"
                 >
-                  Already subscribed? Restore Access
+                  Already have access? Restore Access
                 </button>
               </div>
             </>

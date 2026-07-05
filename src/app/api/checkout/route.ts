@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { createFreeCustomerCode, isFreeAccessModeEnabled } from '@/lib/free-access';
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -7,6 +8,37 @@ export async function GET(request: Request) {
 
   if (!email) {
     return NextResponse.redirect(`${origin}/?error=missing_email`);
+  }
+
+  if (isFreeAccessModeEnabled()) {
+    const customerCode = createFreeCustomerCode(email);
+    const installUrl = new URL('/install', origin);
+    installUrl.searchParams.set('code', customerCode);
+    installUrl.searchParams.set('mode', 'free');
+
+    const res = NextResponse.redirect(installUrl.toString());
+
+    res.cookies.set({
+      name: 'connect_access',
+      value: 'true',
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 365 * 10,
+    });
+
+    res.cookies.set({
+      name: 'connect_customer',
+      value: customerCode,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 365 * 10,
+    });
+
+    return res;
   }
 
   const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY ?? "sk_test_c521c50c9ab2b643dfc88d3ebea1795cdd46a231";

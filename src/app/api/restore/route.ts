@@ -1,12 +1,38 @@
 import { NextResponse } from "next/server";
+import { createFreeCustomerCode, isFreeAccessModeEnabled } from "@/lib/free-access";
 
 export async function POST(request: Request) {
-  const { origin } = new URL(request.url);
-
   try {
     const { email } = await request.json();
     if (!email) {
       return NextResponse.json({ error: "Email is required" }, { status: 400 });
+    }
+
+    if (isFreeAccessModeEnabled()) {
+      const customerCode = createFreeCustomerCode(email);
+      const res = NextResponse.json({ success: true, customerCode });
+
+      res.cookies.set({
+        name: 'connect_access',
+        value: 'true',
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/',
+        maxAge: 60 * 60 * 24 * 365 * 10,
+      });
+
+      res.cookies.set({
+        name: 'connect_customer',
+        value: customerCode,
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/',
+        maxAge: 60 * 60 * 24 * 365 * 10,
+      });
+
+      return res;
     }
 
     const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY ?? "sk_test_c521c50c9ab2b643dfc88d3ebea1795cdd46a231";
@@ -60,7 +86,7 @@ export async function POST(request: Request) {
     });
 
     return res;
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Server error during restore" }, { status: 500 });
   }
 }

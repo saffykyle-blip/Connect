@@ -10,6 +10,7 @@ import {
   profileFromSearchParams,
   type ConnectProfile,
 } from "@/lib/connect-card";
+import { isFreeAccessCode } from "@/lib/free-access";
 import { CardTabs } from "./CardTabs";
 
 type PageProps = {
@@ -138,7 +139,7 @@ async function SubscriptionVerifiedCard({ profile, host }: { profile: ConnectPro
   // Only validate subscription when the broadcaster has set their subId.
   // Receiving phones should always be able to view the card — the subscription
   // gate is for the card OWNER's feature access, not the VIEWER's.
-  if (profile.subId) {
+  if (profile.subId && !isFreeAccessCode(profile.subId)) {
     const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY ?? "sk_test_c521c50c9ab2b643dfc88d3ebea1795cdd46a231";
     let isInactive = false;
 

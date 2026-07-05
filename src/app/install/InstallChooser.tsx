@@ -19,7 +19,7 @@ const setupSteps = [
   },
   {
     n: "3",
-    title: "Paste your Subscription Code",
+    title: "Paste your Access Code",
     body: "Paste the CUS_... code shown on this page into the Subscription Code field in the app. This activates your public card.",
     color: "gold",
   },
@@ -32,7 +32,7 @@ const setupSteps = [
 ];
 
 const guideSteps = [
-  ["Set up once", "Add your name, company, phone, email, avatar or logo, website, social links, and subscription code."],
+  ["Set up once", "Add your name, company, phone, email, avatar or logo, website, social links, and access code."],
   ["Choose a profile", "Open Connect and select one of your saved profiles. The selected profile becomes active for NFC."],
   ["Share anywhere", "Use NFC tap, QR code, copied link, Android share sheet, or contact save."],
   ["Every phone can receive it", "Android and Huawei install the APK. iPhone users open the shared web card through NFC link, QR, or browser fallback."],
@@ -41,6 +41,7 @@ const guideSteps = [
 export function InstallChooser() {
   const searchParams = useSearchParams();
   const code = searchParams.get("code") ?? "";
+  const isFreeMode = searchParams.get("mode") === "free" || code.startsWith("CUS_FREE_");
   const [copied, setCopied] = useState(false);
 
   async function copyCode() {
@@ -66,7 +67,7 @@ export function InstallChooser() {
         {code && (
           <div className="mb-5 rounded-lg border border-[#4df6a2]/35 bg-[#4df6a2]/[0.08] p-5">
             <p className="mb-1 text-xs font-bold uppercase tracking-widest text-[#d9ffe8]">
-              Your Subscription Code
+              {isFreeMode ? "Your Free Testing Access Code" : "Your Subscription Code"}
             </p>
             <div className="flex items-center gap-3">
               <code className="flex-1 overflow-x-auto rounded-lg border border-white/10 bg-black/30 px-4 py-3 font-mono text-base font-bold tracking-wider text-[#d9ffe8]">
@@ -80,7 +81,7 @@ export function InstallChooser() {
               </button>
             </div>
             <p className="mt-2 text-xs leading-relaxed text-[#aaa592]">
-              Paste this code into the app once. It links your public profile to your subscription.
+              Paste this code into the app once. It links your public profile to your Connect access.
             </p>
           </div>
         )}
