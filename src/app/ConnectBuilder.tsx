@@ -41,6 +41,13 @@ const fields: Array<{ key: Field; label: string; placeholder: string; type?: str
   { key: "website", label: "Website", placeholder: "https://example.com", type: "url" },
 ];
 
+const themeOptions = [
+  { value: "mint", label: "Pulse Mint" },
+  { value: "coral", label: "Cyber Coral" },
+  { value: "gold", label: "Obsidian Gold" },
+  { value: "blue", label: "Electric Blue" },
+];
+
 declare global {
   interface Window {
     AndroidInterface?: {
@@ -54,20 +61,6 @@ export function ConnectBuilder({ customerCode }: { customerCode?: string }) {
   const [origin] = useState(() => {
     return typeof window === "undefined" ? "https://web-profiles.vercel.app" : window.location.origin;
   });
-
-  if (!customerCode) {
-    return (
-      <main className="flex min-h-screen items-center justify-center bg-[#090b0f] p-5 text-center">
-        <div className="mx-auto max-w-md rounded-2xl border border-[#f6b84a]/40 bg-[#111720] p-8 shadow-2xl">
-          <h2 className="mb-3 text-xl font-bold text-[#f6b84a]">Session Update Required</h2>
-          <p className="mb-6 text-sm text-[#cbd6e4]">Your browser session is missing the required Paystack subscription link. To fix this, please return to the home page and use the <strong>Restore Access</strong> feature with your email address.</p>
-          <Link href="/" className="rounded-lg bg-[#f6b84a] px-6 py-3 font-bold text-black transition-transform hover:scale-[1.02]">
-            Go to Home Page
-          </Link>
-        </div>
-      </main>
-    );
-  }
 
   const [profiles, setProfiles] = useState<ConnectProfile[]>(() => {
     if (typeof window === "undefined") return defaultProfiles;
@@ -108,10 +101,24 @@ export function ConnectBuilder({ customerCode }: { customerCode?: string }) {
   }), [origin, profile, customerCode]);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.AndroidInterface) {
+    if (customerCode && typeof window !== "undefined" && window.AndroidInterface) {
       window.AndroidInterface.updateNfcUrl(cardUrl);
     }
-  }, [cardUrl]);
+  }, [cardUrl, customerCode]);
+
+  if (!customerCode) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-[#090b0f] p-5 text-center">
+        <div className="mx-auto max-w-md rounded-2xl border border-[#f6b84a]/40 bg-[#111720] p-8 shadow-2xl">
+          <h2 className="mb-3 text-xl font-bold text-[#f6b84a]">Session Update Required</h2>
+          <p className="mb-6 text-sm text-[#cbd6e4]">Your browser session is missing the required Paystack subscription link. To fix this, please return to the home page and use the <strong>Restore Access</strong> feature with your email address.</p>
+          <Link href="/" className="rounded-lg bg-[#f6b84a] px-6 py-3 font-bold text-black transition-transform hover:scale-[1.02]">
+            Go to Home Page
+          </Link>
+        </div>
+      </main>
+    );
+  }
 
   const qrUrl = `https://quickchart.io/qr?size=260&margin=2&text=${encodeURIComponent(cardUrl)}`;
 
@@ -263,6 +270,21 @@ export function ConnectBuilder({ customerCode }: { customerCode?: string }) {
                 />
               </label>
             ))}
+
+            <label className="grid gap-2 text-sm font-bold text-[#d6dee9] sm:col-span-2">
+              Card Theme
+              <select
+                className="rounded-lg border border-white/10 bg-white/[0.055] px-3 py-3 text-[#f7f4ed] outline-none focus:border-[#18c8f3]"
+                onChange={(event) => updateField("theme", event.target.value)}
+                value={profile.theme || "mint"}
+              >
+                {themeOptions.map((option) => (
+                  <option className="bg-[#11130c] text-[#f7f4ed]" key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
 
             {/* Social Links */}
             <div className="grid gap-2 sm:col-span-2">

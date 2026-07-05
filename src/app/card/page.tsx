@@ -84,17 +84,48 @@ function ProfileUnavailable() {
       <p className="mb-6 text-[#9da8b8] leading-relaxed">
         This Connect digital business card is currently inactive or the subscription has lapsed.
       </p>
-      <a
+      <Link
         href="/"
         className="inline-block rounded-lg bg-gradient-to-br from-[#13bde8] to-[#0d8fb3] px-6 py-3 text-sm font-black text-[#031016] shadow-[0_8px_20px_rgba(24,200,243,0.24)] transition-opacity hover:opacity-90"
       >
         Reactivate Subscription
-      </a>
+      </Link>
       <p className="mt-4 text-xs text-[#9da8b8]">
         If you believe this is an error, restore access with your email on the home page.
       </p>
     </section>
   );
+}
+
+const cardThemes = {
+  mint: {
+    accent: "#4df6a2",
+    soft: "rgba(77,246,162,0.18)",
+    warm: "rgba(255,106,91,0.14)",
+    panel: "rgba(17,19,12,0.92)",
+  },
+  coral: {
+    accent: "#ff6a5b",
+    soft: "rgba(255,106,91,0.18)",
+    warm: "rgba(77,246,162,0.12)",
+    panel: "rgba(19,13,11,0.92)",
+  },
+  gold: {
+    accent: "#ffd36e",
+    soft: "rgba(255,211,110,0.18)",
+    warm: "rgba(77,246,162,0.1)",
+    panel: "rgba(19,17,10,0.92)",
+  },
+  blue: {
+    accent: "#51b7ff",
+    soft: "rgba(81,183,255,0.18)",
+    warm: "rgba(255,106,91,0.12)",
+    panel: "rgba(10,14,20,0.92)",
+  },
+};
+
+function getCardTheme(theme: string) {
+  return cardThemes[theme as keyof typeof cardThemes] ?? cardThemes.mint;
 }
 
 async function SubscriptionVerifiedCard({ profile, host }: { profile: ConnectProfile; host: string }) {
@@ -135,11 +166,23 @@ async function SubscriptionVerifiedCard({ profile, host }: { profile: ConnectPro
   const role = displayRole(profile);
   const phone = normalizePhone(profile.phone);
   const qrUrl = `https://quickchart.io/qr?size=280&margin=2&text=${encodeURIComponent(cardUrl)}`;
+  const theme = getCardTheme(profile.theme);
 
   return (
-    <section className="overflow-hidden rounded-lg border border-white/10 bg-[#101722]/90 shadow-[0_24px_80px_rgba(0,0,0,0.44)] backdrop-blur-xl">
-      <div className="bg-[radial-gradient(circle_at_50%_0%,rgba(24,200,243,0.18),transparent_55%),linear-gradient(145deg,rgba(246,184,74,0.16),transparent_45%)] px-6 pb-6 pt-7 text-center">
-        <div className="mx-auto mb-5 flex h-28 w-28 items-center justify-center overflow-hidden rounded-lg border border-white/15 bg-white/[0.07] text-4xl font-black text-[#18c8f3]">
+    <section
+      className="overflow-hidden rounded-lg border border-white/10 shadow-[0_24px_80px_rgba(0,0,0,0.44)] backdrop-blur-xl"
+      style={{ backgroundColor: theme.panel }}
+    >
+      <div
+        className="px-6 pb-6 pt-7 text-center"
+        style={{
+          background: `radial-gradient(circle at 50% 0%, ${theme.soft}, transparent 55%), linear-gradient(145deg, ${theme.warm}, transparent 45%)`,
+        }}
+      >
+        <div
+          className="mx-auto mb-5 flex h-28 w-28 items-center justify-center overflow-hidden rounded-lg border border-white/15 bg-white/[0.07] text-4xl font-black"
+          style={{ color: theme.accent }}
+        >
           {profile.avatar ? (
             <img src={profile.avatar} alt={displayName(profile)} className="h-full w-full object-cover" />
           ) : (

@@ -7,6 +7,7 @@ export type ConnectProfile = {
   website: string;
   avatar: string;
   bio: string;
+  theme: string;
   socialLinks?: string[];
   subId?: string;
 };
@@ -20,6 +21,7 @@ export const emptyProfile: ConnectProfile = {
   website: "",
   avatar: "",
   bio: "",
+  theme: "mint",
   socialLinks: [],
   subId: undefined,
 };
@@ -55,6 +57,7 @@ export function profileFromSearchParams(
     website: normalizeUrl(firstValue(searchParams.website)),
     avatar: normalizeUrl(firstValue(searchParams.avatar)),
     bio: firstValue(searchParams.bio).trim(),
+    theme: firstValue(searchParams.theme).trim() || "mint",
     socialLinks: firstValue(searchParams.socials).split("|").filter(Boolean).map(normalizeUrl),
     subId: firstValue(searchParams.subId).trim() || undefined,
   };

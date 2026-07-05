@@ -4,6 +4,40 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
+const setupSteps = [
+  {
+    n: "1",
+    title: "Download and install the app",
+    body: "Download Connect APK (Android and Huawei), then tap the file and follow the Android install prompts.",
+    color: "mint",
+  },
+  {
+    n: "2",
+    title: "Open Connect and set up your cards",
+    body: "Enter your name, company, title, phone, email, logo or avatar, website, and social links. You can set up to 3 separate profiles.",
+    color: "mint",
+  },
+  {
+    n: "3",
+    title: "Paste your Subscription Code",
+    body: "Paste the CUS_... code shown on this page into the Subscription Code field in the app. This activates your public card.",
+    color: "gold",
+  },
+  {
+    n: "4",
+    title: "Choose a profile and share",
+    body: "After setup, Connect opens to your Share Hub. Choose a profile, then share it by NFC, QR code, copied link, or contact save.",
+    color: "green",
+  },
+];
+
+const guideSteps = [
+  ["Set up once", "Add your name, company, phone, email, avatar or logo, website, social links, and subscription code."],
+  ["Choose a profile", "Open Connect and select one of your saved profiles. The selected profile becomes active for NFC."],
+  ["Share anywhere", "Use NFC tap, QR code, copied link, Android share sheet, or contact save."],
+  ["Every phone can receive it", "Android and Huawei install the APK. iPhone users open the shared web card through NFC link, QR, or browser fallback."],
+];
+
 export function InstallChooser() {
   const searchParams = useSearchParams();
   const code = searchParams.get("code") ?? "";
@@ -15,155 +49,128 @@ export function InstallChooser() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
     } catch {
-      // fallback — select the text
+      // The code remains visible for manual copy if clipboard access is blocked.
     }
   }
 
   return (
-    <main className="relative min-h-screen text-[#f7f4ed]">
+    <main className="relative min-h-screen text-[#fff7e8]">
       <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-2xl flex-col px-5 py-5">
-
-        {/* Header */}
         <header className="mb-6 flex items-center justify-between gap-4">
           <Link className="flex items-center gap-3" href="/">
-            <img src="/thumbnail.png" alt="Connect" className="h-11 w-11 rounded-xl object-cover shadow-[0_0_22px_rgba(24,200,243,0.35)]" />
+            <img src="/thumbnail.png" alt="Connect" className="h-11 w-11 rounded-lg object-cover shadow-[0_0_22px_rgba(77,246,162,0.24)]" />
             <span className="text-lg font-black">Connect</span>
           </Link>
         </header>
 
-        {/* Subscription code banner */}
         {code && (
-          <div className="mb-5 rounded-xl border border-[#18c8f3]/35 bg-[#18c8f3]/[0.08] p-5">
-            <p className="mb-1 text-xs font-bold uppercase tracking-widest text-[#18c8f3]">
+          <div className="mb-5 rounded-lg border border-[#4df6a2]/35 bg-[#4df6a2]/[0.08] p-5">
+            <p className="mb-1 text-xs font-bold uppercase tracking-widest text-[#d9ffe8]">
               Your Subscription Code
             </p>
             <div className="flex items-center gap-3">
-              <code className="flex-1 overflow-x-auto rounded-lg border border-white/10 bg-black/30 px-4 py-3 font-mono text-base font-bold text-[#c9f5ff] tracking-wider">
+              <code className="flex-1 overflow-x-auto rounded-lg border border-white/10 bg-black/30 px-4 py-3 font-mono text-base font-bold tracking-wider text-[#d9ffe8]">
                 {code}
               </code>
               <button
                 onClick={copyCode}
-                className="shrink-0 rounded-lg border border-[#18c8f3]/40 bg-[#18c8f3]/15 px-4 py-3 text-sm font-black text-[#c9f5ff] transition-colors hover:bg-[#18c8f3]/25"
+                className="shrink-0 rounded-lg border border-[#4df6a2]/40 bg-[#4df6a2]/15 px-4 py-3 text-sm font-black text-[#d9ffe8] transition-colors hover:bg-[#4df6a2]/25"
               >
-                {copied ? "✓ Copied!" : "Copy"}
+                {copied ? "Copied" : "Copy"}
               </button>
             </div>
-            <p className="mt-2 text-xs text-[#9da8b8] leading-relaxed">
-              You will paste this code into the app after installing it. It activates your public card profile.
+            <p className="mt-2 text-xs leading-relaxed text-[#aaa592]">
+              Paste this code into the app once. It links your public profile to your subscription.
             </p>
           </div>
         )}
 
-        {/* Steps */}
-        <section className="shell-card p-7 mb-5">
+        <section className="shell-card mb-5 p-7">
           <h1 className="mb-1 text-2xl font-black tracking-normal text-white">How to set up your Connect card</h1>
-          <p className="mb-6 text-sm text-[#9da8b8] leading-6">Follow these steps to get your NFC card broadcasting in minutes.</p>
+          <p className="mb-6 text-sm leading-6 text-[#aaa592]">Follow these steps to get your Share Hub ready in minutes.</p>
 
           <ol className="space-y-5">
-            {[
-              {
-                n: "1",
-                title: "Download &amp; install the app",
-                body: "Choose the correct APK for your phone below. Tap the file once downloaded and follow the Android install prompts.",
-                color: "cyan",
-              },
-              {
-                n: "2",
-                title: "Open Connect and fill in your details",
-                body: "Enter your name, company, title, phone, email, and any social links. You can set up to 3 separate profiles.",
-                color: "cyan",
-              },
-              {
-                n: "3",
-                title: "Paste your Subscription Code",
-                body: code
-                  ? `Copy your code above (${code.slice(0, 8)}...) and paste it into the \"Subscription Code\" field in the app. This activates your public card.`
-                  : "Paste the CUS_... code shown above into the \"Subscription Code\" field in the app. This activates your public card.",
-                color: "amber",
-              },
-              {
-                n: "4",
-                title: "Tap \"Save &amp; Broadcast via NFC\"",
-                body: "Your phone will now broadcast your digital business card over NFC whenever someone taps their phone against yours.",
-                color: "green",
-              },
-            ].map((step) => (
+            {setupSteps.map((step) => (
               <li key={step.n} className="flex gap-4">
                 <div
                   className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-black ${
-                    step.color === "amber"
-                      ? "bg-[#f6b84a]/15 border border-[#f6b84a]/35 text-[#f6b84a]"
+                    step.color === "gold"
+                      ? "border border-[#ffd36e]/35 bg-[#ffd36e]/15 text-[#ffd36e]"
                       : step.color === "green"
-                      ? "bg-[#22c55e]/15 border border-[#22c55e]/35 text-[#22c55e]"
-                      : "bg-[#18c8f3]/15 border border-[#18c8f3]/35 text-[#18c8f3]"
+                      ? "border border-[#4df6a2]/35 bg-[#4df6a2]/15 text-[#4df6a2]"
+                      : "border border-[#4df6a2]/35 bg-[#4df6a2]/15 text-[#4df6a2]"
                   }`}
                 >
                   {step.n}
                 </div>
                 <div>
-                  <h3
-                    className="font-bold text-white text-sm mb-1"
-                    dangerouslySetInnerHTML={{ __html: step.title }}
-                  />
-                  <p className="text-sm text-[#9da8b8] leading-6">{step.body}</p>
+                  <h3 className="mb-1 text-sm font-bold text-white">{step.title}</h3>
+                  <p className="text-sm leading-6 text-[#aaa592]">
+                    {step.n === "3" && code ? `Copy your code above (${code.slice(0, 8)}...) and paste it into the Subscription Code field in the app. This activates your public card.` : step.body}
+                  </p>
                 </div>
               </li>
             ))}
           </ol>
         </section>
 
-        {/* Download buttons */}
+        <section className="shell-card mb-5 p-7">
+          <div className="mb-5 rounded-lg border border-[#4df6a2]/30 bg-[#4df6a2]/[0.08] p-5 text-center">
+            <p className="text-sm font-black uppercase tracking-[0.14em] text-[#d9ffe8]">Watch the 90-second guide</p>
+            <p className="mt-2 text-sm leading-6 text-[#aaa592]">
+              Video placeholder ready. Until the final guide video is uploaded, use the quick written guide below.
+            </p>
+          </div>
+
+          <h2 className="mb-1 text-lg font-black text-white">How Connect works</h2>
+          <div className="mt-4 grid gap-3">
+            {guideSteps.map(([title, body]) => (
+              <div className="rounded-lg border border-white/10 bg-white/[0.04] p-4" key={title}>
+                <h3 className="text-sm font-black text-white">{title}</h3>
+                <p className="mt-1 text-sm leading-6 text-[#aaa592]">{body}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
         <section className="shell-card p-7">
           <h2 className="mb-1 text-lg font-black text-white">Download</h2>
-          <p className="mb-5 text-sm text-[#9da8b8]">Choose the file that matches your phone type.</p>
+          <p className="mb-5 text-sm text-[#aaa592]">
+            Android and Huawei use the same signed Connect APK.
+          </p>
 
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4">
             <a
-              className="group rounded-xl border border-white/10 bg-white/[0.04] p-5 transition-colors hover:border-[#18c8f3]/50 hover:bg-white/[0.08]"
+              className="group rounded-lg border border-[#4df6a2]/35 bg-[#4df6a2]/[0.08] p-5 transition-colors hover:border-[#4df6a2]/60 hover:bg-[#4df6a2]/[0.12]"
               href="/downloads/connect-android.apk"
             >
-              <div className="mb-2 text-2xl">🤖</div>
-              <h3 className="text-base font-bold text-white group-hover:text-[#18c8f3]">Android APK</h3>
-              <p className="mt-1 text-xs text-[#9da8b8]">
-                Samsung, OnePlus, Pixel, and most Android phones.
+              <h3 className="text-base font-black text-[#d9ffe8]">Download Connect APK (Android and Huawei)</h3>
+              <p className="mt-2 text-sm leading-6 text-[#aaa592]">
+                Works for Samsung, Pixel, OnePlus, Xiaomi, Honor, Huawei, and most Android-based phones with NFC support.
               </p>
             </a>
 
-            <a
-              className="group rounded-xl border border-white/10 bg-white/[0.04] p-5 transition-colors hover:border-[#18c8f3]/50 hover:bg-white/[0.08]"
-              href="/downloads/connect-huawei.apk"
-            >
-              <div className="mb-2 text-2xl">📱</div>
-              <h3 className="text-base font-bold text-white group-hover:text-[#18c8f3]">Huawei APK</h3>
-              <p className="mt-1 text-xs text-[#9da8b8]">
-                Optimized build for Huawei devices (no Google Play).
-              </p>
-            </a>
-
-            <div className="rounded-xl border border-[#f6b84a]/20 bg-[#f6b84a]/5 p-5">
-              <div className="mb-2 text-2xl">🍎</div>
-              <h3 className="text-base font-bold text-[#f6b84a]">iPhone / iOS</h3>
-              <p className="mt-1 text-xs text-[#9da8b8]">
-                Apple restricts background NFC on iPhones. Share your card URL manually or print the QR code.
+            <div className="rounded-lg border border-[#ffd36e]/20 bg-[#ffd36e]/5 p-5">
+              <h3 className="text-base font-bold text-[#ffd36e]">iPhone / iOS</h3>
+              <p className="mt-1 text-sm leading-6 text-[#aaa592]">
+                Apple restricts background NFC broadcasting. iPhone users can still receive cards through NFC web links, QR codes, contact save, and normal browser links.
               </p>
             </div>
 
             <Link
-              className="group rounded-xl border border-white/10 bg-white/[0.04] p-5 transition-colors hover:border-white/30 hover:bg-white/[0.08]"
+              className="group rounded-lg border border-white/10 bg-white/[0.04] p-5 transition-colors hover:border-white/30 hover:bg-white/[0.08]"
               href="/card"
             >
-              <div className="mb-2 text-2xl">👁️</div>
               <h3 className="text-base font-bold text-white">Preview Card</h3>
-              <p className="mt-1 text-xs text-[#9da8b8]">
-                See what your public profile looks like when someone taps your card.
+              <p className="mt-1 text-sm leading-6 text-[#aaa592]">
+                See what a public profile looks like when someone taps, scans, or opens your link.
               </p>
             </Link>
           </div>
         </section>
 
-        {/* Footer */}
-        <div className="mt-6 text-center text-xs text-[#9da8b8]">
-          <p>Need help? <Link href="/" className="text-[#18c8f3] hover:underline">Return to home</Link></p>
+        <div className="mt-6 text-center text-xs text-[#aaa592]">
+          <p>Need help? <Link href="/" className="text-[#4df6a2] hover:underline">Return to home</Link></p>
         </div>
       </div>
     </main>

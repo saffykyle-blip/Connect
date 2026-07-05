@@ -27,25 +27,35 @@ function detectSocialPlatform(url: string): string {
   }
 }
 
+const cardThemes = {
+  mint: { accent: "#4df6a2", shadow: "rgba(77,246,162,0.22)" },
+  coral: { accent: "#ff6a5b", shadow: "rgba(255,106,91,0.22)" },
+  gold: { accent: "#ffd36e", shadow: "rgba(255,211,110,0.22)" },
+  blue: { accent: "#51b7ff", shadow: "rgba(81,183,255,0.22)" },
+};
+
+function getCardTheme(theme: string) {
+  return cardThemes[theme as keyof typeof cardThemes] ?? cardThemes.mint;
+}
+
 export function CardTabs({ profile, phone, cardUrl, qrUrl }: CardTabsProps) {
   const [activeTab, setActiveTab] = useState<"details" | "qr">("details");
+  const theme = getCardTheme(profile.theme);
 
   return (
     <div className="flex w-full flex-col">
       <div className="mx-auto mb-6 flex w-full max-w-xs rounded-lg border border-white/10 bg-white/[0.055] p-1 shadow-inner">
         <button
           onClick={() => setActiveTab("details")}
-          className={`flex-1 rounded-md py-2 text-sm font-bold transition-colors ${
-            activeTab === "details" ? "bg-[#18c8f3] text-[#031016] shadow-[0_10px_24px_rgba(24,200,243,0.2)]" : "text-[#9da8b8] hover:text-white"
-          }`}
+          className={`flex-1 rounded-md py-2 text-sm font-bold transition-colors ${activeTab === "details" ? "text-[#06110a]" : "text-[#9da8b8] hover:text-white"}`}
+          style={activeTab === "details" ? { backgroundColor: theme.accent, boxShadow: `0 10px 24px ${theme.shadow}` } : undefined}
         >
           Details
         </button>
         <button
           onClick={() => setActiveTab("qr")}
-          className={`flex-1 rounded-md py-2 text-sm font-bold transition-colors ${
-            activeTab === "qr" ? "bg-[#18c8f3] text-[#031016] shadow-[0_10px_24px_rgba(24,200,243,0.2)]" : "text-[#9da8b8] hover:text-white"
-          }`}
+          className={`flex-1 rounded-md py-2 text-sm font-bold transition-colors ${activeTab === "qr" ? "text-[#06110a]" : "text-[#9da8b8] hover:text-white"}`}
+          style={activeTab === "qr" ? { backgroundColor: theme.accent, boxShadow: `0 10px 24px ${theme.shadow}` } : undefined}
         >
           QR Code
         </button>
@@ -96,7 +106,8 @@ export function CardTabs({ profile, phone, cardUrl, qrUrl }: CardTabsProps) {
             ))}
 
             <a
-              className="rounded-lg border border-[#18c8f3]/60 bg-[#18c8f3] px-4 py-3 text-center font-black text-[#031016] shadow-[0_12px_28px_rgba(24,200,243,0.22)]"
+              className="rounded-lg border px-4 py-3 text-center font-black text-[#06110a]"
+              style={{ backgroundColor: theme.accent, borderColor: theme.accent, boxShadow: `0 12px 28px ${theme.shadow}` }}
               download={`${displayName(profile).replace(/\s+/g, "_")}_Connect.vcf`}
               href={vCardDataUri(profile, cardUrl)}
             >
@@ -106,7 +117,7 @@ export function CardTabs({ profile, phone, cardUrl, qrUrl }: CardTabsProps) {
         </div>
       ) : (
         <div className="flex flex-col items-center animate-in fade-in zoom-in-95 duration-200 px-5 pb-5">
-          <img src={qrUrl} alt="Connect card QR code" className="h-48 w-48 rounded-lg bg-white p-2 shadow-[0_20px_54px_rgba(24,200,243,0.18)]" />
+          <img src={qrUrl} alt="Connect card QR code" className="h-48 w-48 rounded-lg bg-white p-2" style={{ boxShadow: `0 20px 54px ${theme.shadow}` }} />
           <p className="mt-4 text-center text-sm leading-5 text-[#9da8b8]">
             Same card link, ready for any camera to scan.
           </p>
