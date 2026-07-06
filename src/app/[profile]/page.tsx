@@ -35,7 +35,7 @@ export default async function LegacyProfilePage({ params }: PageProps) {
     notFound();
   }
 
-  const cardUrl = new URL("/card", "https://web-profiles.vercel.app");
+  const cardUrl = new URL("/card", "https://connect-chi-rosy.vercel.app");
   Object.entries(legacyProfile).forEach(([key, value]) => {
     cardUrl.searchParams.set(key, value);
   });

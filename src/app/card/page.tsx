@@ -201,7 +201,7 @@ async function SubscriptionVerifiedCard({ profile, host }: { profile: ConnectPro
 
 export default async function CardPage({ searchParams }: PageProps) {
   const profile = profileFromSearchParams(await searchParams);
-  const host = (await headers()).get("host") || "web-profiles.vercel.app";
+  const host = (await headers()).get("host") || "connect-chi-rosy.vercel.app";
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#06080d] text-[#f7f4ed]">

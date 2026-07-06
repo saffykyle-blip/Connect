@@ -59,7 +59,7 @@ declare global {
 
 export function ConnectBuilder({ customerCode }: { customerCode?: string }) {
   const [origin] = useState(() => {
-    return typeof window === "undefined" ? "https://web-profiles.vercel.app" : window.location.origin;
+    return typeof window === "undefined" ? "https://connect-chi-rosy.vercel.app" : window.location.origin;
   });
 
   const [profiles, setProfiles] = useState<ConnectProfile[]>(() => {
