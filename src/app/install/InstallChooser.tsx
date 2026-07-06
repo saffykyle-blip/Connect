@@ -43,6 +43,7 @@ export function InstallChooser() {
   const code = searchParams.get("code") ?? "";
   const isFreeMode = searchParams.get("mode") === "free" || code.startsWith("CUS_FREE_");
   const [copied, setCopied] = useState(false);
+  const [showGuideDetails, setShowGuideDetails] = useState(false);
 
   async function copyCode() {
     try {
@@ -116,22 +117,41 @@ export function InstallChooser() {
         </section>
 
         <section className="shell-card mb-5 p-7">
-          <div className="mb-5 rounded-lg border border-[#4df6a2]/30 bg-[#4df6a2]/[0.08] p-5 text-center">
-            <p className="text-sm font-black uppercase tracking-[0.14em] text-[#d9ffe8]">Watch the 90-second guide</p>
+          <div className="rounded-lg border border-[#4df6a2]/30 bg-[#4df6a2]/[0.08] p-5 text-center">
+            <p className="text-sm font-black uppercase tracking-[0.14em] text-[#d9ffe8]">Watch the short tutorial</p>
             <p className="mt-2 text-sm leading-6 text-[#aaa592]">
-              Video placeholder ready. Until the final guide video is uploaded, use the quick written guide below.
+              Watch this short tutorial to learn more about how Connect works.
             </p>
+            <video
+              className="mt-5 aspect-video w-full rounded-lg border border-white/10 bg-black shadow-[0_20px_60px_rgba(0,0,0,0.35)]"
+              controls
+              preload="metadata"
+              src="/videos/connect-tutorial.mp4"
+            >
+              Your browser does not support the video tag.
+            </video>
           </div>
 
-          <h2 className="mb-1 text-lg font-black text-white">How Connect works</h2>
-          <div className="mt-4 grid gap-3">
-            {guideSteps.map(([title, body]) => (
-              <div className="rounded-lg border border-white/10 bg-white/[0.04] p-4" key={title}>
-                <h3 className="text-sm font-black text-white">{title}</h3>
-                <p className="mt-1 text-sm leading-6 text-[#aaa592]">{body}</p>
-              </div>
-            ))}
-          </div>
+          <button
+            type="button"
+            onClick={() => setShowGuideDetails((current) => !current)}
+            className="mt-5 inline-flex items-center gap-3 rounded-lg border border-white/10 bg-white/[0.045] px-4 py-3 text-sm font-bold text-[#d9ffe8] transition-colors hover:border-[#4df6a2]/45 hover:bg-[#4df6a2]/[0.08]"
+            aria-expanded={showGuideDetails}
+          >
+            <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#4df6a2]/40 bg-[#4df6a2]/15 text-base font-black">?</span>
+            Click here to learn more
+          </button>
+
+          {showGuideDetails && (
+            <div className="mt-4 grid gap-3">
+              {guideSteps.map(([title, body]) => (
+                <div className="rounded-lg border border-white/10 bg-white/[0.04] p-4" key={title}>
+                  <h3 className="text-sm font-black text-white">{title}</h3>
+                  <p className="mt-1 text-sm leading-6 text-[#aaa592]">{body}</p>
+                </div>
+              ))}
+            </div>
+          )}
         </section>
 
         <section className="shell-card p-7">
