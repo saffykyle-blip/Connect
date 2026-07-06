@@ -12,7 +12,7 @@ import { NextResponse } from 'next/server';
  * Without them the browser preflight (OPTIONS) fails silently.
  */
 
-const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME ?? 'connect-cards';
+const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME ?? 'dt59rpcro';
 const UPLOAD_PRESET = process.env.CLOUDINARY_UPLOAD_PRESET ?? 'connect_avatars';
 
 const corsHeaders = {
@@ -40,14 +40,15 @@ export async function POST(request: Request): Promise<NextResponse> {
       return NextResponse.json({ error: 'File too large (max 5MB)' }, { status: 413, headers: corsHeaders });
     }
 
-    // Convert to base64 data URI for Cloudinary unsigned upload
-    const base64 = Buffer.from(buffer).toString('base64');
-    const dataUri = `data:${contentType};base64,${base64}`;
-
     const formData = new FormData();
-    formData.append('file', dataUri);
+    const extension = contentType.includes('png')
+      ? 'png'
+      : contentType.includes('webp')
+        ? 'webp'
+        : 'jpg';
+    const file = new Blob([buffer], { type: contentType });
+    formData.append('file', file, `connect-avatar.${extension}`);
     formData.append('upload_preset', UPLOAD_PRESET);
-    formData.append('folder', 'connect-avatars');
 
     const cloudRes = await fetch(
       `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
